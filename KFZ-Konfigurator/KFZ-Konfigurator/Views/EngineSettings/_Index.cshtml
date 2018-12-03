@@ -1,4 +1,5 @@
 ﻿@using KFZ_Konfigurator.Helper;
+@using KFZ_Konfigurator.Models;
 @model KFZ_Konfigurator.ViewModels.EngineSettingsPageViewModel
 
 @{
@@ -17,7 +18,7 @@
                data-bind="click: () => configViewModel.selectEngineSettings(@item.Id)">
                 <div class="flex-column w-100 align-items-lg-start">
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">@($"{Html.DisplayFor(_ => item.Engine.Liter)} {Html.DisplayFor(_ => item.Engine.EngineKind)} {Html.DisplayFor(_ => item.Gears)}{LocalizationManager.Localize("TechnicalData_Transmission_Suffix")}")</h5>
+                        <h5 class="mb-1">@($"{Html.DisplayFor(_ => item.Engine.Liter)} {LocalizationManager.LocalizeCategory<EngineCategory>(item.Engine.EngineKind)} {Html.DisplayFor(_ => item.Gears)}{LocalizationManager.Localize("TechnicalData_Transmission_Suffix")}")</h5>
                         <h5 class="mb-1">@Html.DisplayFor(_ => item.Price)</h5>
                     </div>
                     <div class="mt-2 row">
@@ -81,6 +82,7 @@
             saveViewModel('/EngineSettings/SetSelectedEngineSettings', viewModel.selectedEngineSettings().id, antiForgeryToken)
                 .fail((error) => {
                     console.log('failed to set selected engine: ' + error.responseText + ' (' + error.statusText + ')');
+                    // TODO randomly triggered, maybe because of antiForgeryValidation
                     alert('something went wrong. see console for details');
                 });
         });

@@ -17,17 +17,21 @@ namespace KFZ_Konfigurator.Helper
             return conditional ? data : null;
         }
 
-        public static FuelKind EngineKindToFuelKind(EngineKind engineKind)
+        public static string EngineKindToFuelKind()
         {
-            switch (engineKind)
-            {
-                case EngineKind.TDI:
-                    return FuelKind.Diesel;
-                case EngineKind.TFSI:
-                    return FuelKind.Petrol;
-                default:
-                    throw new NotImplementedException($"unknown engine kind {engineKind}");
-            }
+            //TODO
+
+            return string.Empty;
+
+            //switch (engineKind)
+            //{
+            //    case EngineKind.TDI:
+            //        return FuelKind.Diesel;
+            //    case EngineKind.TFSI:
+            //        return FuelKind.Petrol;
+            //    default:
+            //        throw new NotImplementedException($"unknown engine kind {engineKind}");
+            //}
         }
 
         public static string GenerateShortGuid()

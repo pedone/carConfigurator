@@ -345,4 +345,16 @@
   <data name="General_Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="FuelCategory_Diesel" xml:space="preserve">
+    <value>Diesel</value>
+  </data>
+  <data name="FuelCategory_Petrol" xml:space="preserve">
+    <value>Petrol</value>
+  </data>
+  <data name="EngineCategory_TDI" xml:space="preserve">
+    <value>TDI</value>
+  </data>
+  <data name="EngineCategory_TFSI" xml:space="preserve">
+    <value>TFSI</value>
+  </data>
 </root>

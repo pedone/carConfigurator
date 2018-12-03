@@ -172,7 +172,7 @@ class ConfigurationViewModel {
 
     /**
      * @param {Array.<ViewModel>} accessories
-     * @param {number} category
+     * @param {string} category
      */
     countCategory(accessories, category) {
         return _.filter(accessories, (cur) => cur.category === category).length;

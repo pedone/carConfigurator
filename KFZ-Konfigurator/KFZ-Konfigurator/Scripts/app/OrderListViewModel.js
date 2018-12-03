@@ -59,12 +59,14 @@ class OrderListViewModel {
                 .done(
                     /** @param {{NewPageCount: number, NewItem: OrderData }} data */
                     function (data) {
+                        consol.debug('removing order ' + item.id + ' from view');
                         self.orders.remove(item);
                         if (data.NewItem) {
                             //insert the item that has moved up to the current page
                             self.orders.push(new OrderItemViewModel(data.NewItem));
                         }
                         if (self.pages().length !== data.NewPageCount) {
+                            console.debug('page count changed from ' + self.pages().length + ' to ' + data.NewPageCount);
                             //update the max page count
                             self.pages.pop();
 
@@ -77,7 +79,8 @@ class OrderListViewModel {
                         }
                     })
                 .fail(function (error) {
-                    console.log('failed to delete order: ' + error.responseText + ' (' + error.statusText + ')');
+                    console.error('failed to delete order: ' + error.responseText + ' (' + error.statusText + ')');
+                    console.debug(error);
                     alert('order ' + item.name + ' could not be removed');
                 });
         };
@@ -116,10 +119,12 @@ class OrderListViewModel {
                 data: { pageIndex: targetIndex },
                 dataType: 'json'
             }).done(function (data) {
+                console.debug('order list for page index ' + targetIndex + ' successfully retrieved');
                 self.currentPageIndex(targetIndex);
                 self.orders(_.map(data, (cur) => new OrderItemViewModel(cur)));
             }).fail(function (error) {
-                console.log('failed to load page: ' + error.responseText + ' (' + error.statusText + ')');
+                console.error('failed to load page: ' + error.responseText + ' (' + error.statusText + ')');
+                console.debug(error);
             });
         };
     }

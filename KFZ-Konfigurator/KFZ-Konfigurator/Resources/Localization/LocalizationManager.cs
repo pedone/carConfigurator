@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KFZ_Konfigurator.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -14,12 +15,17 @@ namespace KFZ_Konfigurator.Resources.Localization
             return GetCurrentCultureResourceManager().GetString(id) ?? throw new ArgumentException($"Resource with the name {id} was not found");
         }
 
-        public static string LocalizeEnum<T>(string item) where T : struct, IConvertible
-        {
-            if (!typeof(T).IsEnum)
-                throw new ArgumentException("Type of T must be an enum");
+        //public static string LocalizeEnum<T>(string item) where T : struct, IConvertible
+        //{
+        //    if (!typeof(T).IsEnum)
+        //        throw new ArgumentException("Type of T must be an enum");
 
-            return Localize($"{typeof(T).Name}_{item}");
+        //    return Localize($"{typeof(T).Name}_{item}");
+        //}
+
+        public static string LocalizeCategory<T>(string name) where T : Category
+        {
+            return Localize($"{typeof(T).Name}_{name}");
         }
 
         private static ResourceManager GetCurrentCultureResourceManager()

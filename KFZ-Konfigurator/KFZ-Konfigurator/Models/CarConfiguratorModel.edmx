@@ -14,6 +14,13 @@
     <EntitySet Name="Engines" EntityType="CarConfiguratorModel.Store.Engines" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Configurations" EntityType="CarConfiguratorModel.Store.Configurations" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Orders" EntityType="CarConfiguratorModel.Store.Orders" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Categories" EntityType="CarConfiguratorModel.Store.Categories" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Categories_EngineCategory" EntityType="CarConfiguratorModel.Store.Categories_EngineCategory" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Categories_BodyCategory" EntityType="CarConfiguratorModel.Store.Categories_BodyCategory" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Categories_PaintCategory" EntityType="CarConfiguratorModel.Store.Categories_PaintCategory" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Categories_AccessoryCategory" EntityType="CarConfiguratorModel.Store.Categories_AccessoryCategory" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Categories_CarSeriesCategory" EntityType="CarConfiguratorModel.Store.Categories_CarSeriesCategory" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Categories_FuelCategory" EntityType="CarConfiguratorModel.Store.Categories_FuelCategory" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="ConfigurationAccessory" EntityType="CarConfiguratorModel.Store.ConfigurationAccessory" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="EngineEngineSettings" Association="CarConfiguratorModel.Store.EngineEngineSettings">
       <End Role="Engine" EntitySet="Engines" />
@@ -47,6 +54,54 @@
       <End Role="Configuration" EntitySet="Configurations" />
       <End Role="Order" EntitySet="Orders" />
     </AssociationSet>
+    <AssociationSet Name="EngineKindEngine" Association="CarConfiguratorModel.Store.EngineKindEngine">
+      <End Role="EngineCategory" EntitySet="Categories_EngineCategory" />
+      <End Role="Engine" EntitySet="Engines" />
+    </AssociationSet>
+    <AssociationSet Name="BodyKindCarModel" Association="CarConfiguratorModel.Store.BodyKindCarModel">
+      <End Role="BodyCategory" EntitySet="Categories_BodyCategory" />
+      <End Role="CarModel" EntitySet="CarModels" />
+    </AssociationSet>
+    <AssociationSet Name="PaintKindPaint" Association="CarConfiguratorModel.Store.PaintKindPaint">
+      <End Role="PaintCategory" EntitySet="Categories_PaintCategory" />
+      <End Role="Paint" EntitySet="Paints" />
+    </AssociationSet>
+    <AssociationSet Name="AccessoryKindAccessory" Association="CarConfiguratorModel.Store.AccessoryKindAccessory">
+      <End Role="AccessoryCategory" EntitySet="Categories_AccessoryCategory" />
+      <End Role="Accessory" EntitySet="Accessories" />
+    </AssociationSet>
+    <AssociationSet Name="CarSeriesCarModel" Association="CarConfiguratorModel.Store.CarSeriesCarModel">
+      <End Role="CarSeriesCategory" EntitySet="Categories_CarSeriesCategory" />
+      <End Role="CarModel" EntitySet="CarModels" />
+    </AssociationSet>
+    <AssociationSet Name="FuelCategoryEngineCategory" Association="CarConfiguratorModel.Store.FuelCategoryEngineCategory">
+      <End Role="FuelCategory" EntitySet="Categories_FuelCategory" />
+      <End Role="EngineCategory" EntitySet="Categories_EngineCategory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EngineCategory_inherits_Category" Association="CarConfiguratorModel.Store.FK_EngineCategory_inherits_Category">
+      <End Role="Category" EntitySet="Categories" />
+      <End Role="EngineCategory" EntitySet="Categories_EngineCategory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BodyCategory_inherits_Category" Association="CarConfiguratorModel.Store.FK_BodyCategory_inherits_Category">
+      <End Role="Category" EntitySet="Categories" />
+      <End Role="BodyCategory" EntitySet="Categories_BodyCategory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PaintCategory_inherits_Category" Association="CarConfiguratorModel.Store.FK_PaintCategory_inherits_Category">
+      <End Role="Category" EntitySet="Categories" />
+      <End Role="PaintCategory" EntitySet="Categories_PaintCategory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AccessoryCategory_inherits_Category" Association="CarConfiguratorModel.Store.FK_AccessoryCategory_inherits_Category">
+      <End Role="Category" EntitySet="Categories" />
+      <End Role="AccessoryCategory" EntitySet="Categories_AccessoryCategory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CarSeriesCategory_inherits_Category" Association="CarConfiguratorModel.Store.FK_CarSeriesCategory_inherits_Category">
+      <End Role="Category" EntitySet="Categories" />
+      <End Role="CarSeriesCategory" EntitySet="Categories_CarSeriesCategory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_FuelCategory_inherits_Category" Association="CarConfiguratorModel.Store.FK_FuelCategory_inherits_Category">
+      <End Role="Category" EntitySet="Categories" />
+      <End Role="FuelCategory" EntitySet="Categories_FuelCategory" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="Accessories">
     <Key>
@@ -55,8 +110,7 @@
     <Property Name="Id" Type="int" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Price" Type="float" Nullable="false" />
-    <Property Name="Category" Type="int" Nullable="false" />
-    <Property Name="SubCategory" Type="int" Nullable="false" />
+    <Property Name="Category_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="EngineSettings">
     <Key>
@@ -80,9 +134,9 @@
     <Property Name="Id" Type="int" Nullable="false" />
     <Property Name="Color" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Price" Type="float" Nullable="false" />
-    <Property Name="Category" Type="int" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
     <Property Name="IsDefault" Type="bit" Nullable="true" />
+    <Property Name="Category_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Rims">
     <Key>
@@ -98,9 +152,9 @@
       <PropertyRef Name="Id" />
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="BodyType" Type="int" Nullable="false" />
     <Property Name="Year" Type="int" Nullable="false" />
-    <Property Name="Series" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="BodyCategory_Id" Type="int" Nullable="false" />
+    <Property Name="SeriesCategory_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Engines">
     <Key>
@@ -108,9 +162,9 @@
     </Key>
     <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Liter" Type="int" Nullable="false" />
-    <Property Name="EngineKind" Type="int" Nullable="false" />
     <Property Name="Size" Type="int" Nullable="false" />
     <Property Name="Performance" Type="int" Nullable="false" />
+    <Property Name="Category_Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Configurations">
     <Key>
@@ -131,6 +185,50 @@
     <Property Name="Guid" Type="nvarchar(max)" Nullable="false" />
     <Property Name="ExtrasPrice" Type="float" Nullable="false" />
     <Property Name="BasePrice" Type="float" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Categories">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Categories_EngineCategory">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="FuelCategory_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Categories_BodyCategory">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Categories_PaintCategory">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Categories_AccessoryCategory">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Categories_CarSeriesCategory">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Categories_FuelCategory">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="ConfigurationAccessory">
     <Key>
@@ -214,6 +312,78 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="EngineKindEngine">
+    <End Role="EngineCategory" Type="CarConfiguratorModel.Store.Categories_EngineCategory" Multiplicity="1" />
+    <End Role="Engine" Type="CarConfiguratorModel.Store.Engines" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EngineCategory">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Engine">
+        <PropertyRef Name="Category_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="BodyKindCarModel">
+    <End Role="BodyCategory" Type="CarConfiguratorModel.Store.Categories_BodyCategory" Multiplicity="1" />
+    <End Role="CarModel" Type="CarConfiguratorModel.Store.CarModels" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BodyCategory">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="CarModel">
+        <PropertyRef Name="BodyCategory_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="PaintKindPaint">
+    <End Role="PaintCategory" Type="CarConfiguratorModel.Store.Categories_PaintCategory" Multiplicity="1" />
+    <End Role="Paint" Type="CarConfiguratorModel.Store.Paints" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PaintCategory">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Paint">
+        <PropertyRef Name="Category_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="AccessoryKindAccessory">
+    <End Role="AccessoryCategory" Type="CarConfiguratorModel.Store.Categories_AccessoryCategory" Multiplicity="1" />
+    <End Role="Accessory" Type="CarConfiguratorModel.Store.Accessories" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AccessoryCategory">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Accessory">
+        <PropertyRef Name="Category_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CarSeriesCarModel">
+    <End Role="CarSeriesCategory" Type="CarConfiguratorModel.Store.Categories_CarSeriesCategory" Multiplicity="1" />
+    <End Role="CarModel" Type="CarConfiguratorModel.Store.CarModels" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CarSeriesCategory">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="CarModel">
+        <PropertyRef Name="SeriesCategory_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FuelCategoryEngineCategory">
+    <End Role="FuelCategory" Type="CarConfiguratorModel.Store.Categories_FuelCategory" Multiplicity="1" />
+    <End Role="EngineCategory" Type="CarConfiguratorModel.Store.Categories_EngineCategory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="FuelCategory">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="EngineCategory">
+        <PropertyRef Name="FuelCategory_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_ConfigurationAccessory_Configuration">
     <End Role="Configuration" Type="CarConfiguratorModel.Store.Configurations" Multiplicity="1" />
     <End Role="ConfigurationAccessory" Type="CarConfiguratorModel.Store.ConfigurationAccessory" Multiplicity="*" />
@@ -238,6 +408,90 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_EngineCategory_inherits_Category">
+    <End Role="Category" Type="CarConfiguratorModel.Store.Categories" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="EngineCategory" Type="CarConfiguratorModel.Store.Categories_EngineCategory" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="EngineCategory">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_BodyCategory_inherits_Category">
+    <End Role="Category" Type="CarConfiguratorModel.Store.Categories" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="BodyCategory" Type="CarConfiguratorModel.Store.Categories_BodyCategory" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="BodyCategory">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PaintCategory_inherits_Category">
+    <End Role="Category" Type="CarConfiguratorModel.Store.Categories" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="PaintCategory" Type="CarConfiguratorModel.Store.Categories_PaintCategory" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PaintCategory">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AccessoryCategory_inherits_Category">
+    <End Role="Category" Type="CarConfiguratorModel.Store.Categories" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="AccessoryCategory" Type="CarConfiguratorModel.Store.Categories_AccessoryCategory" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="AccessoryCategory">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CarSeriesCategory_inherits_Category">
+    <End Role="Category" Type="CarConfiguratorModel.Store.Categories" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CarSeriesCategory" Type="CarConfiguratorModel.Store.Categories_CarSeriesCategory" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="CarSeriesCategory">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_FuelCategory_inherits_Category">
+    <End Role="Category" Type="CarConfiguratorModel.Store.Categories" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="FuelCategory" Type="CarConfiguratorModel.Store.Categories_FuelCategory" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="FuelCategory">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -249,8 +503,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Price" Type="Double" Nullable="false" />
-          <Property Name="Category" Type="CarConfiguratorModel.AccessoryCategory" Nullable="false" />
-          <Property Name="SubCategory" Type="CarConfiguratorModel.AccessorySubCategory" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="CarConfiguratorModel.AccessoryKindAccessory" FromRole="Accessory" ToRole="AccessoryCategory" />
         </EntityType>
         <EntityType Name="EngineSettings">
           <Key>
@@ -274,9 +527,9 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Color" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Price" Type="Double" Nullable="false" />
-          <Property Name="Category" Type="CarConfiguratorModel.PaintCategory" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" />
           <Property Name="IsDefault" Type="Boolean" Nullable="true" />
+          <NavigationProperty Name="Category" Relationship="CarConfiguratorModel.PaintKindPaint" FromRole="Paint" ToRole="PaintCategory" />
         </EntityType>
         <EntityType Name="Rim">
           <Key>
@@ -324,69 +577,46 @@
             <End Role="Configuration" EntitySet="Configurations" />
             <End Role="Order" EntitySet="Orders" />
           </AssociationSet>
-        </EntityContainer>
-        <EnumType Name="AccessoryCategory">
-          <Member Name="Comfort" />
-          <Member Name="Infotainment" />
-          <Member Name="AssistenceSystems" />
-          <Member Name="TechnologyAndSafety" />
-        </EnumType>
+          <AssociationSet Name="EngineKindEngine" Association="CarConfiguratorModel.EngineKindEngine">
+            <End Role="EngineCategory" EntitySet="Categories" />
+            <End Role="Engine" EntitySet="Engines" />
+          </AssociationSet>
+          <AssociationSet Name="BodyKindCarModel" Association="CarConfiguratorModel.BodyKindCarModel">
+            <End Role="BodyCategory" EntitySet="Categories" />
+            <End Role="CarModel" EntitySet="CarModels" />
+          </AssociationSet>
+          <AssociationSet Name="PaintKindPaint" Association="CarConfiguratorModel.PaintKindPaint">
+            <End Role="PaintCategory" EntitySet="Categories" />
+            <End Role="Paint" EntitySet="Paints" />
+          </AssociationSet>
+          <AssociationSet Name="AccessoryKindAccessory" Association="CarConfiguratorModel.AccessoryKindAccessory">
+            <End Role="AccessoryCategory" EntitySet="Categories" />
+            <End Role="Accessory" EntitySet="Accessories" />
+          </AssociationSet>
+          <AssociationSet Name="CarSeriesCarModel" Association="CarConfiguratorModel.CarSeriesCarModel">
+            <End Role="CarSeriesCategory" EntitySet="Categories" />
+            <End Role="CarModel" EntitySet="CarModels" />
+          </AssociationSet>
+          <EntitySet Name="Categories" EntityType="CarConfiguratorModel.Category" />
+          <AssociationSet Name="FuelCategoryEngineCategory" Association="CarConfiguratorModel.FuelCategoryEngineCategory">
+            <End Role="FuelCategory" EntitySet="Categories" />
+            <End Role="EngineCategory" EntitySet="Categories" />
+          </AssociationSet>
+          </EntityContainer>
         <EnumType Name="WheelDriveKind">
           <Member Name="Front" />
           <Member Name="Rear" />
           <Member Name="All" />
-        </EnumType>
-        <EnumType Name="BodyKind">
-          <Member Name="Sportback" />
-          <Member Name="Limousine" />
-          <Member Name="Cabriolet" />
-          <Member Name="Avant" />
-          <Member Name="Coupé" />
-          <Member Name="SUV" />
-          <Member Name="Roadster" />
-        </EnumType>
-        <EnumType Name="CarBrandKind">
-          <Member Name="BMW" />
-          <Member Name="Audi" />
-          <Member Name="Mercedes" />
-          <Member Name="Ford" />
-          <Member Name="Subaru" />
-          <Member Name="Toyota" />
-          <Member Name="Lexus" />
-          <Member Name="VW" />
-          <Member Name="Honda" />
-          <Member Name="Peugeot" />
-          <Member Name="Nissan" />
-          <Member Name="Fiat" />
-        </EnumType>
-        <EnumType Name="RimBrandKind">
-          <Member Name="Vossen" />
-          <Member Name="Enkei" />
-          <Member Name="BBS" />
-          <Member Name="OZRacing" />
-          <Member Name="Konig" />
-          <Member Name="SSR" />
-          <Member Name="TSW" />
-          <Member Name="Motegi" />
-          <Member Name="Focal" />
-          <Member Name="Lexani" />
-          <Member Name="KMC" />
-          <Member Name="ION" />
-          <Member Name="Oxgord" />
-        </EnumType>
-        <EnumType Name="EngineKind">
-          <Member Name="TFSI" />
-          <Member Name="TDI" />
         </EnumType>
         <EntityType Name="CarModel">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="BodyType" Type="CarConfiguratorModel.BodyKind" Nullable="false" />
           <Property Name="Year" Type="Int32" Nullable="false" />
-          <Property Name="Series" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="EngineSettings" Relationship="CarConfiguratorModel.CarModelEngineSettings" FromRole="CarModel" ToRole="EngineSettings" />
+          <NavigationProperty Name="BodyCategory" Relationship="CarConfiguratorModel.BodyKindCarModel" FromRole="CarModel" ToRole="BodyCategory" />
+          <NavigationProperty Name="SeriesCategory" Relationship="CarConfiguratorModel.CarSeriesCarModel" FromRole="CarModel" ToRole="CarSeriesCategory" />
         </EntityType>
         <EntityType Name="Engine">
           <Key>
@@ -394,10 +624,10 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Liter" Type="Int32" Nullable="false" />
-          <Property Name="EngineKind" Type="CarConfiguratorModel.EngineKind" Nullable="false" />
           <Property Name="Size" Type="Int32" Nullable="false" />
           <Property Name="Performance" Type="Int32" Nullable="false" />
           <NavigationProperty Name="EngineSettings" Relationship="CarConfiguratorModel.EngineEngineSettings" FromRole="Engine" ToRole="EngineSettings" />
+          <NavigationProperty Name="Category" Relationship="CarConfiguratorModel.EngineKindEngine" FromRole="Engine" ToRole="EngineCategory" />
         </EntityType>
         <Association Name="EngineEngineSettings">
           <End Type="CarConfiguratorModel.Engine" Role="Engine" Multiplicity="1" />
@@ -407,20 +637,6 @@
           <End Type="CarConfiguratorModel.CarModel" Role="CarModel" Multiplicity="1" />
           <End Type="CarConfiguratorModel.EngineSettings" Role="EngineSettings" Multiplicity="*" />
         </Association>
-        <EnumType Name="AccessorySubCategory" >
-          <Member Name="None" />
-          <Member Name="Climate" />
-          <Member Name="Locksystems" />
-          <Member Name="Navigation" />
-          <Member Name="Entertainment" />
-          <Member Name="DrivingAndBrakes" />
-          <Member Name="Mirror" />
-        </EnumType>
-        <EnumType Name="PaintCategory">
-          <Member Name="Uni" />
-          <Member Name="Metalic" />
-          <Member Name="Pearlescent" />
-        </EnumType>
         <EntityType Name="Configuration">
           <Key>
             <PropertyRef Name="Id" />
@@ -465,6 +681,50 @@
             <OnDelete Action="Cascade" />
           </End>
         </Association>
+        <EntityType Name="EngineCategory" BaseType="CarConfiguratorModel.Category">
+          <NavigationProperty Name="FuelCategory" Relationship="CarConfiguratorModel.FuelCategoryEngineCategory" FromRole="EngineCategory" ToRole="FuelCategory" />
+        </EntityType>
+        <Association Name="EngineKindEngine">
+          <End Type="CarConfiguratorModel.EngineCategory" Role="EngineCategory" Multiplicity="1" />
+          <End Type="CarConfiguratorModel.Engine" Role="Engine" Multiplicity="*" />
+        </Association>
+        <EntityType Name="BodyCategory" BaseType="CarConfiguratorModel.Category">
+        </EntityType>
+        <Association Name="BodyKindCarModel">
+          <End Type="CarConfiguratorModel.BodyCategory" Role="BodyCategory" Multiplicity="1" />
+          <End Type="CarConfiguratorModel.CarModel" Role="CarModel" Multiplicity="*" />
+        </Association>
+        <EntityType Name="PaintCategory" BaseType="CarConfiguratorModel.Category">
+        </EntityType>
+        <Association Name="PaintKindPaint">
+          <End Type="CarConfiguratorModel.PaintCategory" Role="PaintCategory" Multiplicity="1" />
+          <End Type="CarConfiguratorModel.Paint" Role="Paint" Multiplicity="*" />
+        </Association>
+        <EntityType Name="AccessoryCategory" BaseType="CarConfiguratorModel.Category">
+        </EntityType>
+        <Association Name="AccessoryKindAccessory">
+          <End Type="CarConfiguratorModel.AccessoryCategory" Role="AccessoryCategory" Multiplicity="1" />
+          <End Type="CarConfiguratorModel.Accessory" Role="Accessory" Multiplicity="*" />
+        </Association>
+        <EntityType Name="CarSeriesCategory" BaseType="CarConfiguratorModel.Category">
+        </EntityType>
+        <Association Name="CarSeriesCarModel">
+          <End Type="CarConfiguratorModel.CarSeriesCategory" Role="CarSeriesCategory" Multiplicity="1" />
+          <End Type="CarConfiguratorModel.CarModel" Role="CarModel" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FuelCategory" BaseType="CarConfiguratorModel.Category">
+        </EntityType>
+        <Association Name="FuelCategoryEngineCategory">
+          <End Type="CarConfiguratorModel.FuelCategory" Role="FuelCategory" Multiplicity="1" />
+          <End Type="CarConfiguratorModel.EngineCategory" Role="EngineCategory" Multiplicity="*" />
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -477,8 +737,6 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Price" ColumnName="Price" />
-          <ScalarProperty Name="Category" ColumnName="Category" />
-          <ScalarProperty Name="SubCategory" ColumnName="SubCategory" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -502,7 +760,6 @@
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Color" ColumnName="Color" />
           <ScalarProperty Name="Price" ColumnName="Price" />
-          <ScalarProperty Name="Category" ColumnName="Category" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
         </MappingFragment>
@@ -522,9 +779,7 @@
       <EntityTypeMapping TypeName="IsTypeOf(CarConfiguratorModel.CarModel)">
         <MappingFragment StoreEntitySet="CarModels">
           <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="BodyType" ColumnName="BodyType" />
           <ScalarProperty Name="Year" ColumnName="Year" />
-          <ScalarProperty Name="Series" ColumnName="Series" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -533,7 +788,6 @@
         <MappingFragment StoreEntitySet="Engines">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Liter" ColumnName="Liter" />
-          <ScalarProperty Name="EngineKind" ColumnName="EngineKind" />
           <ScalarProperty Name="Size" ColumnName="Size" />
           <ScalarProperty Name="Performance" ColumnName="Performance" />
         </MappingFragment>
@@ -554,6 +808,44 @@
           <ScalarProperty Name="Guid" ColumnName="Guid" />
           <ScalarProperty Name="ExtrasPrice" ColumnName="ExtrasPrice" />
           <ScalarProperty Name="BasePrice" ColumnName="BasePrice" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Categories">
+      <EntityTypeMapping TypeName="IsTypeOf(CarConfiguratorModel.Category)">
+        <MappingFragment StoreEntitySet="Categories">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(CarConfiguratorModel.EngineCategory)">
+        <MappingFragment StoreEntitySet="Categories_EngineCategory">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(CarConfiguratorModel.BodyCategory)">
+        <MappingFragment StoreEntitySet="Categories_BodyCategory">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(CarConfiguratorModel.PaintCategory)">
+        <MappingFragment StoreEntitySet="Categories_PaintCategory">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(CarConfiguratorModel.AccessoryCategory)">
+        <MappingFragment StoreEntitySet="Categories_AccessoryCategory">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(CarConfiguratorModel.CarSeriesCategory)">
+        <MappingFragment StoreEntitySet="Categories_CarSeriesCategory">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(CarConfiguratorModel.FuelCategory)">
+        <MappingFragment StoreEntitySet="Categories_FuelCategory">
+          <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -610,6 +902,54 @@
         <ScalarProperty Name="Id" ColumnName="ConfigurationOrder_Configuration_Id" />
       </EndProperty>
       <EndProperty Name="Configuration">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="EngineKindEngine" TypeName="CarConfiguratorModel.EngineKindEngine" StoreEntitySet="Engines">
+      <EndProperty Name="EngineCategory">
+        <ScalarProperty Name="Id" ColumnName="Category_Id" />
+      </EndProperty>
+      <EndProperty Name="Engine">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="BodyKindCarModel" TypeName="CarConfiguratorModel.BodyKindCarModel" StoreEntitySet="CarModels">
+      <EndProperty Name="BodyCategory">
+        <ScalarProperty Name="Id" ColumnName="BodyCategory_Id" />
+      </EndProperty>
+      <EndProperty Name="CarModel">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="PaintKindPaint" TypeName="CarConfiguratorModel.PaintKindPaint" StoreEntitySet="Paints">
+      <EndProperty Name="PaintCategory">
+        <ScalarProperty Name="Id" ColumnName="Category_Id" />
+      </EndProperty>
+      <EndProperty Name="Paint">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="AccessoryKindAccessory" TypeName="CarConfiguratorModel.AccessoryKindAccessory" StoreEntitySet="Accessories">
+      <EndProperty Name="AccessoryCategory">
+        <ScalarProperty Name="Id" ColumnName="Category_Id" />
+      </EndProperty>
+      <EndProperty Name="Accessory">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="CarSeriesCarModel" TypeName="CarConfiguratorModel.CarSeriesCarModel" StoreEntitySet="CarModels">
+      <EndProperty Name="CarSeriesCategory">
+        <ScalarProperty Name="Id" ColumnName="SeriesCategory_Id" />
+      </EndProperty>
+      <EndProperty Name="CarModel">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="FuelCategoryEngineCategory" TypeName="CarConfiguratorModel.FuelCategoryEngineCategory" StoreEntitySet="Categories_EngineCategory">
+      <EndProperty Name="FuelCategory">
+        <ScalarProperty Name="Id" ColumnName="FuelCategory_Id" />
+      </EndProperty>
+      <EndProperty Name="EngineCategory">
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
     </AssociationSetMapping>

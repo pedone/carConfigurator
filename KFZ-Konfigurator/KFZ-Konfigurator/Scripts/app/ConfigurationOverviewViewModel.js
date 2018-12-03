@@ -18,12 +18,14 @@ class ConfigurationOverviewViewModel {
                 dataType: 'text'
             }).done(
                 function (data) {
+                    console.debug('order successfully placed');
                     if (self.options.placeOrderSuccess) {
                         self.options.placeOrderSuccess(data);
                     }
                 })
                 .fail(function (error) {
-                    console.log('failed to place order: ' + error.responseText + ' (' + error.statusText + ')');
+                    console.error('failed to place order: ' + error.responseText + ' (' + error.statusText + ')');
+                    console.debug(error);
                     if (self.options.placeOrderFailure) {
                         self.options.placeOrderFailure();
                     }

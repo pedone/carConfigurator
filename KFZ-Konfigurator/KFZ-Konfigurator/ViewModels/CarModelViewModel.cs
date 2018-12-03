@@ -8,7 +8,7 @@ namespace KFZ_Konfigurator.ViewModels
 {
     public class CarModelViewModel : ItemViewModelBase
     {
-        public BodyKind BodyType { get; }
+        public string BodyType { get; }
         public string Series { get; }
         public string Model { get; }
         public int Year { get; }
@@ -17,8 +17,8 @@ namespace KFZ_Konfigurator.ViewModels
         public CarModelViewModel(CarModel model)
             : base(model.Id)
         {
-            BodyType = model.BodyType;
-            Series = model.Series;
+            BodyType = model.BodyCategory.Name;
+            Series = model.SeriesCategory.Name;
             Year = model.Year;
             BaseSettings = new EngineSettingsViewModel(GetBaseSettings(model.EngineSettings));
         }

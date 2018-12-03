@@ -47,12 +47,16 @@ namespace KFZ_Konfigurator.Controllers
                 if (SessionData.ActiveConfiguration.RimId != -1)
                     selectedRims = new RimViewModel(context.Rims.First(cur => cur.Id == SessionData.ActiveConfiguration.RimId));
 
+                //accessory categories
+                var accessoryCategories = context.Categories.OfType<AccessoryCategory>().Select(cur => cur.Name).ToList();
+
                 return View(new AccessoriesPageViewModel
                 {
                     Accessories = accessories,
                     SelectedEngineSetting = selectedEngineSetting,
                     SelectedPaint = selectedPaint,
                     SelectedRims = selectedRims,
+                    AccessoryCategories = accessoryCategories
                 });
             }
         }

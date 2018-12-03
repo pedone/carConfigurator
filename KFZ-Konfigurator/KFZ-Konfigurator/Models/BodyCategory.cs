@@ -10,20 +10,9 @@
 namespace KFZ_Konfigurator.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public enum CarBrandKind : int
+    public partial class BodyCategory : Category
     {
-        BMW = 0,
-        Audi = 1,
-        Mercedes = 2,
-        Ford = 3,
-        Subaru = 4,
-        Toyota = 5,
-        Lexus = 6,
-        VW = 7,
-        Honda = 8,
-        Peugeot = 9,
-        Nissan = 10,
-        Fiat = 11
     }
 }

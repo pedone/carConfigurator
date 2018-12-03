@@ -17,7 +17,7 @@ namespace KFZ_Konfigurator.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
-        public AccessoryCategory Category { get; set; }
-        public AccessorySubCategory SubCategory { get; set; }
+    
+        public virtual AccessoryCategory Category { get; set; }
     }
 }

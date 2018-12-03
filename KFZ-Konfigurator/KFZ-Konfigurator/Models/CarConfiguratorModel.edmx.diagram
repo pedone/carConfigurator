@@ -4,23 +4,39 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="530bb6e007644f4da8d93b6304ace583" Name="Diagram1" ZoomLevel="86">
-        <EntityTypeShape EntityType="CarConfiguratorModel.Accessory" Width="1.5" PointX="1" PointY="0.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="CarConfiguratorModel.EngineSettings" Width="2" PointX="7.375" PointY="3" IsExpanded="true" />
-        <EntityTypeShape EntityType="CarConfiguratorModel.Paint" Width="1.5" PointX="3.875" PointY="0.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="CarConfiguratorModel.CarModel" Width="1.625" PointX="11" PointY="4.5" />
-        <EntityTypeShape EntityType="CarConfiguratorModel.Engine" Width="1.625" PointX="11" PointY="1.375" />
+      <Diagram DiagramId="530bb6e007644f4da8d93b6304ace583" Name="Diagram1" ZoomLevel="82">
+        <EntityTypeShape EntityType="CarConfiguratorModel.Accessory" Width="1.875" PointX="1" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.EngineSettings" Width="2" PointX="7.375" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.Paint" Width="1.5" PointX="3.875" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.CarModel" Width="1.625" PointX="11" PointY="6.625" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.Engine" Width="1.625" PointX="11" PointY="3.5" />
         <AssociationConnector Association="CarConfiguratorModel.EngineEngineSettings" />
         <AssociationConnector Association="CarConfiguratorModel.CarModelEngineSettings" />
-        <EntityTypeShape EntityType="CarConfiguratorModel.Configuration" Width="1.5" PointX="4" PointY="3.125" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.Configuration" Width="1.5" PointX="4" PointY="5.25" />
         <AssociationConnector Association="CarConfiguratorModel.PaintConfiguration" />
         <AssociationConnector Association="CarConfiguratorModel.EngineSettingsConfiguration" />
         <AssociationConnector Association="CarConfiguratorModel.ConfigurationAccessory" />
-        <EntityTypeShape EntityType="CarConfiguratorModel.Rim" Width="1.5" PointX="6" PointY="0.5" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.Rim" Width="1.5" PointX="6" PointY="2.625" />
         <AssociationConnector Association="CarConfiguratorModel.RimConfiguration" ManuallyRouted="false" >
         </AssociationConnector>
-        <EntityTypeShape EntityType="CarConfiguratorModel.Order" Width="1.5" PointX="0.875" PointY="5.625" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.Order" Width="1.5" PointX="0.875" PointY="7.75" />
         <AssociationConnector Association="CarConfiguratorModel.ConfigurationOrder" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.EngineCategory" Width="1.5" PointX="14.75" PointY="3.375" IsExpanded="false" />
+        <AssociationConnector Association="CarConfiguratorModel.EngineKindEngine" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.BodyCategory" Width="1.5" PointX="15" PointY="6.75" IsExpanded="false" />
+        <AssociationConnector Association="CarConfiguratorModel.BodyKindCarModel" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.PaintCategory" Width="1.5" PointX="3.875" PointY="0.5" IsExpanded="false" />
+        <AssociationConnector Association="CarConfiguratorModel.PaintKindPaint" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.AccessoryCategory" Width="1.875" PointX="1" PointY="0.5" IsExpanded="false" />
+        <AssociationConnector Association="CarConfiguratorModel.AccessoryKindAccessory" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.CarSeriesCategory" Width="1.875" PointX="11.125" PointY="9.625" IsExpanded="false" />
+        <AssociationConnector Association="CarConfiguratorModel.CarSeriesCarModel" />
+        <EntityTypeShape EntityType="CarConfiguratorModel.FuelCategory" Width="1.5" PointX="17.75" PointY="3.375" IsExpanded="false" />
+        <InheritanceConnector EntityType="CarConfiguratorModel.AccessoryCategory" />
+        <InheritanceConnector EntityType="CarConfiguratorModel.EngineCategory" />
+        <InheritanceConnector EntityType="CarConfiguratorModel.BodyCategory" />
+        <InheritanceConnector EntityType="CarConfiguratorModel.CarSeriesCategory" />
+        <AssociationConnector Association="CarConfiguratorModel.FuelCategoryEngineCategory" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

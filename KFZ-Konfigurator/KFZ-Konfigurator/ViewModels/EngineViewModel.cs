@@ -5,7 +5,8 @@ namespace KFZ_Konfigurator.ViewModels
 {
     public class EngineViewModel : ItemViewModelBase
     {
-        public EngineKind EngineKind { get; }
+        public string FuelKind { get; }
+        public string EngineKind { get; }
         public int Liter { get; }
         public int Size { get; }
         public int Performance { get; }
@@ -14,7 +15,8 @@ namespace KFZ_Konfigurator.ViewModels
         public EngineViewModel(Engine model)
             : base(model.Id)
         {
-            EngineKind = model.EngineKind;
+            FuelKind = model.Category.FuelCategory.Name;
+            EngineKind = model.Category.Name;
             Liter = model.Liter;
             Size = model.Size;
             Performance = model.Performance;

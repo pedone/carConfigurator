@@ -37,7 +37,7 @@
         </tr>
         <tr>
             <th scope="row">@LocalizationManager.Localize("TechnicalData_FuelType")</th>
-            <td>@(LocalizationManager.LocalizeEnum<FuelKind>(MiscHelper.EngineKindToFuelKind(Model.EngineSetting.Engine.EngineKind).ToString()))</td>
+            <td>@(LocalizationManager.LocalizeCategory<FuelCategory>(Model.EngineSetting.Engine.FuelKind))</td>
         </tr>
     </tbody>
 </table>
@@ -63,7 +63,7 @@
         {
             <tr>
                 <td>@Html.DisplayFor(_ => item.Name)</td>
-                <td>@(LocalizationManager.LocalizeEnum<AccessoryCategory>(item.Category.ToString()))</td>
+                <td>@(LocalizationManager.LocalizeCategory<AccessoryCategory>(item.Category))</td>
                 <td>@Html.DisplayFor(_ => item.Price)</td>
             </tr>
         }
@@ -76,7 +76,7 @@
     <tbody>
         <tr>
             <th scope="row">@LocalizationManager.Localize("ConfigurationOverviewView_Paint_Header")</th>
-            <td>@(LocalizationManager.LocalizeEnum<PaintCategory>(Model.Paint.Category.ToString())) @Html.DisplayFor(_ => Model.Paint.Name)</td>
+            <td>@(LocalizationManager.LocalizeCategory<PaintCategory>(Model.Paint.Category)) @Html.DisplayFor(_ => Model.Paint.Name)</td>
             <td>@Html.DisplayFor(_ => Model.Paint.Price)</td>
         </tr>
         <tr>

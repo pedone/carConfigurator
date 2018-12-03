@@ -10,11 +10,9 @@
 namespace KFZ_Konfigurator.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public enum PaintCategory : int
+    public partial class PaintCategory : Category
     {
-        Uni = 0,
-        Metalic = 1,
-        Pearlescent = 2
     }
 }

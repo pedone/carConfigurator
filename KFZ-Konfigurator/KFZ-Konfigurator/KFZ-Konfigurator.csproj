@@ -190,13 +190,7 @@
     <Compile Include="Models\AccessoryCategory.cs">
       <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccessorySubCategory.cs">
-      <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\BodyKind.cs">
-      <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CarBrandKind.cs">
+    <Compile Include="Models\BodyCategory.cs">
       <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CarConfiguratorModel.Context.cs">
@@ -217,16 +211,25 @@
     <Compile Include="Models\CarModel.cs">
       <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CarSeriesCategory.cs">
+      <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Category.cs">
+      <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Configuration.cs">
       <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Engine.cs">
       <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\EngineKind.cs">
+    <Compile Include="Models\EngineCategory.cs">
       <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\EngineSettings.cs">
+      <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FuelCategory.cs">
       <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Order.cs">
@@ -241,9 +244,7 @@
     <Compile Include="Models\Rim.cs">
       <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\RimBrandKind.cs">
-      <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Models\SeedData\CategorySeedData.cs" />
     <Compile Include="Models\SeedData\AccessorySeedData.cs" />
     <Compile Include="Models\SeedData\CarModelSeedData.cs" />
     <Compile Include="Models\SeedData\EngineSeedData.cs" />
@@ -270,7 +271,6 @@
     <Compile Include="ViewModels\ConfigurationOverviewPageViewModel.cs" />
     <Compile Include="ViewModels\EngineSettingsPageViewModel.cs" />
     <Compile Include="ViewModels\ExteriorPageViewModel.cs" />
-    <Compile Include="ViewModels\FuelKind.cs" />
     <Compile Include="ViewModels\ItemViewModelBase.cs" />
     <Compile Include="ViewModels\OrderListPageViewModel.cs" />
     <Compile Include="ViewModels\OrderOverviewPageViewModel.cs" />

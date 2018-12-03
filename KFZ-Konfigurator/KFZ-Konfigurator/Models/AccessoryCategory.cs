@@ -10,12 +10,9 @@
 namespace KFZ_Konfigurator.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public enum AccessoryCategory : int
+    public partial class AccessoryCategory : Category
     {
-        Comfort = 0,
-        Infotainment = 1,
-        AssistenceSystems = 2,
-        TechnologyAndSafety = 3
     }
 }

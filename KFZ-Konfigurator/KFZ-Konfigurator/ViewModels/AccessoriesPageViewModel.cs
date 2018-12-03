@@ -11,5 +11,6 @@ namespace KFZ_Konfigurator.ViewModels
         public EngineSettingsViewModel SelectedEngineSetting { get; set; }
         public PaintViewModel SelectedPaint { get; set; }
         public RimViewModel SelectedRims { get; set; }
+        public IEnumerable<string> AccessoryCategories { get; set; }
     }
 }

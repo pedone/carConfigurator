@@ -4,18 +4,17 @@
 @{
     Layout = "~/Views/Shared/_ConfigurationLayout.cshtml";
     ViewBag.Title = LocalizationManager.Localize("AccessoriesView_Title");
-    var categoryValues = Enum.GetValues(typeof(AccessoryCategory));
 }
 
 @Html.AntiForgeryToken()
 <div>
     <div class="accordion" id="accessoriesAccordion">
-        @foreach (AccessoryCategory curCategory in categoryValues)
+        @foreach (string curCategory in Model.AccessoryCategories)
         {
             <div class="card">
                 <div class="card-header btn d-flex align-items-start" role="button" data-target="@string.Format($"#collapse{curCategory}")" data-toggle="collapse">
-                    <h5 data-bind="with: { count: configViewModel.countCategory(configViewModel.selectedAccessories(), @((int)curCategory)) }">
-                        @(LocalizationManager.LocalizeEnum<AccessoryCategory>(curCategory.ToString()))
+                    <h5 data-bind="with: { count: configViewModel.countCategory(configViewModel.selectedAccessories(), '@(curCategory)') }">
+                        @(LocalizationManager.LocalizeCategory<AccessoryCategory>(curCategory))
                         <span class="badge badge-secondary" data-bind="text: count, css: { invisible: count === 0 }"></span>
                     </h5>
                 </div>
@@ -65,6 +64,7 @@
             saveViewModel('/Accessories/SetSelectedAccessories', selectedAccessories.length > 0 ? ko.toJSON(selectedAccessories) : null, antiForgeryToken)
                 .fail((error) => {
                     console.log('failed to set selected accessories: ' + error.responseText + ' (' + error.statusText + ')');
+                    // TODO randomly triggered, maybe because of antiForgeryValidation
                     alert('something went wrong. see console for details');
                 });
         });

@@ -331,6 +331,24 @@ namespace KFZ_Konfigurator.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to TDI.
+        /// </summary>
+        internal static string EngineCategory_TDI {
+            get {
+                return ResourceManager.GetString("EngineCategory_TDI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TFSI.
+        /// </summary>
+        internal static string EngineCategory_TFSI {
+            get {
+                return ResourceManager.GetString("EngineCategory_TFSI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Continue To Accessories.
         /// </summary>
         internal static string EngineSettingsView_ContinueToAccessories_Button {
@@ -381,6 +399,24 @@ namespace KFZ_Konfigurator.Resources.Localization {
         internal static string ExteriorView_Title {
             get {
                 return ResourceManager.GetString("ExteriorView_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Diesel.
+        /// </summary>
+        internal static string FuelCategory_Diesel {
+            get {
+                return ResourceManager.GetString("FuelCategory_Diesel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Petrol.
+        /// </summary>
+        internal static string FuelCategory_Petrol {
+            get {
+                return ResourceManager.GetString("FuelCategory_Petrol", resourceCulture);
             }
         }
         

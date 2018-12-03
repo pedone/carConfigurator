@@ -22,11 +22,11 @@ namespace KFZ_Konfigurator.Models
     
         public int Id { get; set; }
         public int Liter { get; set; }
-        public EngineKind EngineKind { get; set; }
         public int Size { get; set; }
         public int Performance { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<EngineSettings> EngineSettings { get; set; }
+        public virtual EngineCategory Category { get; set; }
     }
 }

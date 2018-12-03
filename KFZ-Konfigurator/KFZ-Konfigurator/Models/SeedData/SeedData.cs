@@ -26,24 +26,22 @@ namespace KFZ_Konfigurator.Models.SeedData
                 // let's assume for now that if there's no data in db.carModel, then there's no data yet at all
                 if (!context.CarModels.Any())
                 {
-                    var settingsData = EngineSettingsSeedData.GetRawData();
-                    var carModels = CarModelSeedData.Data.ToList();
-                    var engines = EngineSeedData.Data.ToList();
-                    var engineSettings = EngineSettingsSeedData.Initialize(engines, carModels);
-
-                    Log.Info("adding database seed data");
-
-                    context.CarModels.AddRange(carModels);
-                    context.Engines.AddRange(engines);
-                    context.EngineSettings.AddRange(engineSettings);
+                    context.CarModels.AddRange(CarModelSeedData.Data);
+                    context.Engines.AddRange(EngineSeedData.Data);
+                    context.EngineSettings.AddRange(EngineSettingsSeedData.Data);
 
                     context.Rims.AddRange(RimSeedData.Data);
                     context.Paints.AddRange(PaintSeedData.Data);
                     context.Accessories.AddRange(AccessorySeedData.Data);
+                    context.Categories.AddRange(CategorySeedData.GetData());
                 }
 
                 if (context.ChangeTracker.HasChanges())
+                {
+                    Log.Info("adding database seed data");
                     context.SaveChanges();
+                    Log.Info("db data was added");
+                }
             }
         }
 
@@ -60,7 +58,9 @@ namespace KFZ_Konfigurator.Models.SeedData
             context.Paints.RemoveRange(context.Paints);
             context.Rims.RemoveRange(context.Rims);
             context.Orders.RemoveRange(context.Orders);
+            context.Categories.RemoveRange(context.Categories);
 
+            Log.Info("resetting db data");
             context.SaveChanges();
             Log.Info("db data was reset");
         }

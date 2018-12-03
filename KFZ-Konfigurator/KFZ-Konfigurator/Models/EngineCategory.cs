@@ -10,10 +10,11 @@
 namespace KFZ_Konfigurator.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public enum EngineKind : int
+    public partial class EngineCategory : Category
     {
-        TFSI = 0,
-        TDI = 1
+    
+        public virtual FuelCategory FuelCategory { get; set; }
     }
 }

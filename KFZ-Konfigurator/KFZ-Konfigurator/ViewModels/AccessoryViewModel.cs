@@ -8,16 +8,14 @@ namespace KFZ_Konfigurator.ViewModels
 {
     public class AccessoryViewModel : ItemViewModelBase
     {
-        public AccessoryCategory Category { get; }
+        public string Category { get; }
         public string Name { get; }
-        public AccessorySubCategory SubCategory { get; }
 
         public AccessoryViewModel(Accessory model)
             : base(model.Id, model.Price)
         {
-            Category = model.Category;
+            Category = model.Category.Name;
             Name = model.Name;
-            SubCategory = model.SubCategory;
         }
     }
 }

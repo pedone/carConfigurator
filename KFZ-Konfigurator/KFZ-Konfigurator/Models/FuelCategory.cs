@@ -10,21 +10,9 @@
 namespace KFZ_Konfigurator.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public enum RimBrandKind : int
+    public partial class FuelCategory : Category
     {
-        Vossen = 0,
-        Enkei = 1,
-        BBS = 2,
-        OZRacing = 3,
-        Konig = 4,
-        SSR = 5,
-        TSW = 6,
-        Motegi = 7,
-        Focal = 8,
-        Lexani = 9,
-        KMC = 10,
-        ION = 11,
-        Oxgord = 12
     }
 }

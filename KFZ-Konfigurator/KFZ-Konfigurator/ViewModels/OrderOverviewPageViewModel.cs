@@ -23,7 +23,7 @@ namespace KFZ_Konfigurator.ViewModels
             : base(model.Id, model.BasePrice + model.ExtrasPrice)
         {
             var carModel = model.Configuration.EngineSetting.CarModel;
-            Model = $"{carModel.Series} {carModel.BodyType.ToString()} {carModel.Year}";
+            Model = $"{carModel.SeriesCategory.Name} {carModel.BodyCategory.Name} {carModel.Year}";
 
             BasePrice = model.BasePrice;
             ExtrasPrice = model.ExtrasPrice;

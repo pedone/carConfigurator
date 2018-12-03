@@ -10,15 +10,11 @@
 namespace KFZ_Konfigurator.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public enum BodyKind : int
+    public partial class Category
     {
-        Sportback = 0,
-        Limousine = 1,
-        Cabriolet = 2,
-        Avant = 3,
-        Coupé = 4,
-        SUV = 5,
-        Roadster = 6
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

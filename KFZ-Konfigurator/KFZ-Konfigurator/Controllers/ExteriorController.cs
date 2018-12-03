@@ -54,12 +54,16 @@ namespace KFZ_Konfigurator.Controllers
                 // engine
                 var selectedEngineSetting = new EngineSettingsViewModel(context.EngineSettings.First(cur => cur.Id == SessionData.ActiveConfiguration.EngineSettingsId));
 
+                // paint categories
+                var paintCategories = context.Categories.OfType<PaintCategory>().Select(cur => cur.Name).ToList();
+
                 return View(new ExteriorPageViewModel
                 {
                     Paints = paints,
                     Rims = rims,
                     SelectedAccessories = selectedAccessories,
-                    SelectedEngineSetting = selectedEngineSetting
+                    SelectedEngineSetting = selectedEngineSetting,
+                    PaintCategories = paintCategories
                 });
             }
         }
