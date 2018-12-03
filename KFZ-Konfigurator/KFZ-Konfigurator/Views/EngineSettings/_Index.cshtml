@@ -1,0 +1,88 @@
+﻿@using KFZ_Konfigurator.Helper;
+@model KFZ_Konfigurator.ViewModels.EngineSettingsPageViewModel
+
+@{
+    ViewBag.Title = LocalizationManager.Localize("EngineSettingsView_Title");
+    bool renderScripts = ViewBag.RenderScripts ?? false;
+}
+
+@if (!renderScripts)
+{
+    @Html.AntiForgeryToken()
+    <div class="list-group">
+        @foreach (var item in Model.EngineSettings)
+        {
+            <a class="list-group-item list-group-item-light list-group-item-action rounded-0 d-flex align-items-lg-center @MiscHelper.If(item.IsSelected, "active")"
+               data-toggle="list"
+               data-bind="click: () => configViewModel.selectEngineSettings(@item.Id)">
+                <div class="flex-column w-100 align-items-lg-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">@($"{Html.DisplayFor(_ => item.Engine.Liter)} {Html.DisplayFor(_ => item.Engine.EngineKind)} {Html.DisplayFor(_ => item.Gears)}{LocalizationManager.Localize("TechnicalData_Transmission_Suffix")}")</h5>
+                        <h5 class="mb-1">@Html.DisplayFor(_ => item.Price)</h5>
+                    </div>
+                    <div class="mt-2 row">
+                        <span class="col-sm-4">
+                            <img src="~/Resources/Images/acceleration.svg" class="indicatior-icon" title="@LocalizationManager.Localize("TechnicalData_Acceleration")" />
+                            @Html.DisplayFor(_ => item.Acceleration) s
+                        </span>
+                        <span class="col-sm-4">
+                            <img src="~/Resources/Images/consumption.svg" class="indicatior-icon" title="@LocalizationManager.Localize("TechnicalData_Consumption")" />
+                            @Html.DisplayFor(_ => item.Consumption) l/100 km
+                        </span>
+                        <span class="col-sm-4">
+                            <img src="~/Resources/Images/performance.svg" class="indicatior-icon" title="@LocalizationManager.Localize("TechnicalData_Performance")" />
+                            @Html.DisplayFor(_ => item.Engine.Performance) kW (@Html.DisplayFor(_ => item.Engine.PerformancePS) PS)
+                        </span>
+                        <span class="col-sm-4">
+                            <img src="~/Resources/Images/emissions.svg" class="indicatior-icon" title="@LocalizationManager.Localize("TechnicalData_Emissions")" />
+                            @Html.DisplayFor(_ => item.Emission) g/km
+                        </span>
+                        <span class="col-sm-4">
+                            <img src="~/Resources/Images/topSpeed.svg" class="indicatior-icon" title="@LocalizationManager.Localize("TechnicalData_TopSpeed")" />
+                            @Html.DisplayFor(_ => item.TopSpeed) km/h
+                        </span>
+                        <span class="col-sm-4">
+                            <img src="~/Resources/Images/engineSize.svg" class="indicatior-icon" title="@LocalizationManager.Localize("TechnicalData_EngineSize")" />
+                            @Html.DisplayFor(_ => item.Engine.Size) cm<sup>3</sup>
+                        </span>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        <a class="btn btn-outline-dark" href="@Url.RouteUrl(Constants.Routes.Accessories)">@LocalizationManager.Localize("EngineSettingsView_ContinueToAccessories_Button")</a>
+    </div>
+}
+
+@if (renderScripts)
+{
+    <script id="scriptContent" type="text/javascript">
+        let engineSettings = @Html.Raw(Json.Encode(Model.EngineSettings));
+        let selectedAccessories = @Html.Raw(Json.Encode(Model.SelectedAccessories));
+        let selectedPaint = @Html.Raw(Json.Encode(Model.SelectedPaint));
+        let selectedRims = @Html.Raw(Json.Encode(Model.SelectedRims));
+        let viewModel = new ConfigurationViewModel({ engineSettings: engineSettings, selectedAccessories: selectedAccessories, selectedPaint: selectedPaint, selectedRims: selectedRims });
+
+        $(document).ready(function () {
+            ko.applyBindings({ configViewModel: viewModel });
+        });
+
+        let selectedEngineId = viewModel.selectedEngineId;
+        $(window).on('beforeunload', function () {
+            if (selectedEngineId === viewModel.selectedEngineSettings().id) {
+                console.debug('engine settings did not change');
+                //skip if the selected engine didn't change
+                return;
+            }
+
+            let antiForgeryToken = getAntiForgeryToken($(document));
+            saveViewModel('/EngineSettings/SetSelectedEngineSettings', viewModel.selectedEngineSettings().id, antiForgeryToken)
+                .fail((error) => {
+                    console.log('failed to set selected engine: ' + error.responseText + ' (' + error.statusText + ')');
+                    alert('something went wrong. see console for details');
+                });
+        });
+    </script>
+}

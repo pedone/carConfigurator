@@ -14,7 +14,9 @@ namespace KFZ_Konfigurator
         public static class Routes
         {
             public const string ModelOverview = nameof(ModelOverview);
+            public const string ModelOverviewPartial = nameof(ModelOverviewPartial);
             public const string EngineSettings = nameof(EngineSettings);
+            public const string EngineSettingsPartial = nameof(EngineSettingsPartial);
             public const string Exterior = nameof(Exterior);
             public const string Accessories = nameof(Accessories);
             public const string CurrentConfigurationOverview = nameof(CurrentConfigurationOverview);

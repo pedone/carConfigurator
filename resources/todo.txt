@@ -1,0 +1,10 @@
+TODO
+- error page
+- configuration caroussel
+- configuration partial views
+- application insights
+- car model filter
+- confirmation dialogs
+- azure pipeline deployment
+
+! - entities instead of db enums !

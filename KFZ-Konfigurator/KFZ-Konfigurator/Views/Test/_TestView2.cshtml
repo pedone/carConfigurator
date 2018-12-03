@@ -1,0 +1,21 @@
+﻿@{
+    bool renderScriptSection = (bool)(ViewData["ScriptSection"] ?? false);
+}
+
+@if (!renderScriptSection)
+{
+    <div>TEST2 loaded</div>
+    <button type="button" class="btn btn-primary" id="changeContentBtn">Change Content2</button>
+}
+@if (renderScriptSection)
+{
+    <script id="scriptContent" type="text/javascript">
+        $(document).ready(function () {
+            console.log('test2 loaded');
+
+            $('#changeContentBtn').click(function () {
+                replaceConfigurationContent('/test');
+            });
+        });
+    </script>
+}

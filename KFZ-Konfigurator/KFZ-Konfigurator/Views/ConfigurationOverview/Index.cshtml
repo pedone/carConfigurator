@@ -1,8 +1,10 @@
 ﻿@model KFZ_Konfigurator.ViewModels.ConfigurationOverviewPageViewModel
 
 @{
-    Layout = "~/Views/Shared/_ConfigurationLayout.cshtml";
-    ViewBag.Title = LocalizationManager.Localize("ConfigurationOverviewView_Title");
+                /**/
+
+                Layout = "~/Views/Shared/_ConfigurationLayout.cshtml";
+                ViewBag.Title = LocalizationManager.Localize("ConfigurationOverviewView_Title");
 }
 
 @Html.AntiForgeryToken()
@@ -37,7 +39,6 @@
 </div>
 
 @section scripts {
-    <script type="text/javascript" src="@Url.Content("/Scripts/app/ConfigurationOverviewViewModel.js")"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             let accessories = @Html.Raw(Json.Encode(Model.Accessories));

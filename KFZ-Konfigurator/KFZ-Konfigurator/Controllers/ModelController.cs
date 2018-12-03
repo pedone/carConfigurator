@@ -21,7 +21,37 @@ namespace KFZ_Konfigurator.Controllers
         {
             using (var context = new CarConfiguratorEntityContext())
             {
-                return View(context.CarModels.ToList().Select(cur => new CarModelViewModel(cur)).ToList());
+                return View("~/Views/Configuration/Index.cshtml", new ConfigurationPageViewModel
+                {
+                    PartialViewName = "~/Views/Model/_Index.cshtml",
+                    PartialViewModel = new CarModelPageViewModel
+                    {
+                        CarModels = context.CarModels.ToList().Select(cur => new CarModelViewModel(cur)).ToList()
+                    }
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("configuration/models/partial", Name = Constants.Routes.ModelOverviewPartial)]
+        public JsonResult IndexPartial()
+        {
+            using (var context = new CarConfiguratorEntityContext())
+            {
+                var viewModel = new CarModelPageViewModel
+                {
+                    CarModels = context.CarModels.ToList().Select(cur => new CarModelViewModel(cur)).ToList()
+                };
+                ViewBag.RenderScripts = false;
+                var viewContent = PartialView("~/Views/Model/_Index.cshtml", viewModel);
+                ViewBag.RenderScripts = true;
+                var scriptContent = PartialView("~/Views/Model/_Index.cshtml", viewModel);
+
+                return Json(new
+                {
+                    ViewContent = viewContent,
+                    ScriptContent = scriptContent
+                }, JsonRequestBehavior.AllowGet);
             }
         }
 

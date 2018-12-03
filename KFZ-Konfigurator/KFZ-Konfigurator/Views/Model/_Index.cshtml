@@ -1,0 +1,60 @@
+﻿@model KFZ_Konfigurator.ViewModels.CarModelPageViewModel
+
+@{
+    ViewBag.Title = LocalizationManager.Localize("ModelView_Title");
+    bool renderScripts = ViewBag.RenderScripts ?? ViewData["RenderScripts"] ?? false;
+}
+
+@if (!renderScripts)
+{
+    @Html.AntiForgeryToken()
+    <h2>@LocalizationManager.Localize("ModelView_Header")</h2>
+
+    <div class="row container">
+        @foreach (var item in Model.CarModels)
+        {
+            <a class="card mb-2 col-md-4 rounded-0 car-model-link" data-id="@item.Id"
+               data-href-partial="@Url.RouteUrl(Constants.Routes.EngineSettingsPartial, new { id = item.Id })"
+               href="@Url.RouteUrl(Constants.Routes.EngineSettings, new { id = item.Id })">
+                <div class="card-body">
+                    <h5 class="card-title">@Html.DisplayFor(_ => item.Series) @Html.DisplayFor(_ => item.BodyType) @Html.DisplayFor(_ => item.Year)</h5>
+                    <h6 class="card-subtitle">@LocalizationManager.Localize("General_From") @Html.DisplayFor(_ => item.BaseSettings.Price)</h6>
+                    <div class="card-text mt-3">
+                        <div>
+                            @LocalizationManager.Localize("TechnicalData_Consumption"): @Html.DisplayFor(_ => item.BaseSettings.Consumption) l/100 km
+                        </div>
+                        <div>
+                            @LocalizationManager.Localize("TechnicalData_Emissions"): @Html.DisplayFor(_ => item.BaseSettings.Emission) g/km
+                        </div>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}
+
+@if (renderScripts)
+{
+    <script id="scriptContent" type="text/javascript">
+        $(document).ready(function () {
+            $('.car-model-link').click(function () {
+                event.preventDefault();
+                let visibleTargetUrl = $(this).attr('href');
+                let targetUrl = $(this).data('href-partial');
+                let id = $(this).data('id');
+                let antiForgeryToken = getAntiForgeryToken($(document));
+                saveViewModel('/Model/SetCarModel', id, antiForgeryToken)
+                    .done(() => {
+                        console.log('loading partial ' + targetUrl);
+                        $.get(targetUrl, function (data) {
+                            replaceConfigurationContent(data, visibleTargetUrl, $('#scriptContent'));
+                        })
+                    })
+                    .fail((error) => {
+                        console.log('failed to set car model: ' + error.responseText + ' (' + error.statusText + ')');
+                        alert('something went wrong. see console for details');
+                    });
+            });
+        });
+    </script>
+}

@@ -194,8 +194,6 @@ class ConfigurationViewModel {
         /** @type {boolean} */
         let isSelected = this.accessoriesById[id].isSelected();
 
-        console.log('selectAccessory: ' + id);
-
         if (isSelected || !this.isAccessoryLimitReached()) {
             this.accessoriesById[id].isSelected(!isSelected);
         }

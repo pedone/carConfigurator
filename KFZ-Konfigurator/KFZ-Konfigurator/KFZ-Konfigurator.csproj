@@ -171,6 +171,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\AccessoriesController.cs" />
+    <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\ConfigurationOverviewController.cs" />
     <Compile Include="Controllers\ExteriorController.cs" />
     <Compile Include="Controllers\ModelController.cs" />
@@ -261,6 +262,8 @@
     </Compile>
     <Compile Include="Resources\Localization\LocalizationManager.cs" />
     <Compile Include="SessionData.cs" />
+    <Compile Include="ViewModels\CarModelPageViewModel.cs" />
+    <Compile Include="ViewModels\ConfigurationPageViewModel.cs" />
     <Compile Include="ViewModels\AccessoriesPageViewModel.cs" />
     <Compile Include="ViewModels\AccessoryViewModel.cs" />
     <Compile Include="ViewModels\CarModelViewModel.cs" />
@@ -273,6 +276,7 @@
     <Compile Include="ViewModels\OrderOverviewPageViewModel.cs" />
     <Compile Include="ViewModels\OrderViewModel.cs" />
     <Compile Include="ViewModels\RimViewModel.cs" />
+    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\ConfigurationViewKind.cs" />
     <Compile Include="ViewModels\EngineSettingsViewModel.cs" />
@@ -401,15 +405,18 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Model\Index.cshtml" />
+    <Content Include="Views\Model\_Index.cshtml" />
     <Content Include="Views\Shared\_ConfigurationLayout.cshtml" />
-    <Content Include="Views\EngineSettings\Index.cshtml" />
+    <Content Include="Views\EngineSettings\_Index.cshtml" />
     <Content Include="Views\Accessories\Index.cshtml" />
     <Content Include="Views\Exterior\Index.cshtml" />
     <Content Include="Views\ConfigurationOverview\Index.cshtml" />
     <Content Include="Views\OrderList\Index.cshtml" />
     <Content Include="Views\OrderOverview\Index.cshtml" />
     <Content Include="Views\ConfigurationOverview\_ConfigurationOverview.cshtml" />
+    <Content Include="Views\Configuration\Index.cshtml" />
+    <Content Include="Views\Test\_TestView.cshtml" />
+    <Content Include="Views\Test\_TestView2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
