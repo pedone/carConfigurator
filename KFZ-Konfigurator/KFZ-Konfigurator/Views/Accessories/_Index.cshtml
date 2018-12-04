@@ -14,7 +14,7 @@
         {
             <div class="card">
                 <div class="card-header btn d-flex align-items-start" role="button" data-target="@string.Format($"#collapse{curCategory}")" data-toggle="collapse">
-                    <h5 data-bind="with: { count: configViewModel.countCategory(configViewModel.selectedAccessories(), '@(curCategory)') }">
+                    <h5 data-bind="with: { count: config.countCategory(config.selectedAccessories(), '@(curCategory)') }">
                         @(LocalizationManager.LocalizeCategory<AccessoryCategory>(curCategory))
                         <span class="badge badge-secondary" data-bind="text: count, css: { invisible: count === 0 }"></span>
                     </h5>
@@ -27,9 +27,9 @@
                                 <div class="row">
                                     <div class="col-auto align-items-center d-flex">
                                         <input type="checkbox"
-                                               data-bind="checked: configViewModel.accessoriesById[@item.Id].isSelected, disable: configViewModel.isAccessoryLimitReached() && !configViewModel.accessoriesById[@item.Id].isSelected()" />
+                                               data-bind="checked: config.accessoriesById[@item.Id].isSelected, disable: config.isAccessoryLimitReached() && !config.accessoriesById[@item.Id].isSelected()" />
                                     </div>
-                                    <div class="col" data-bind="click: () => configViewModel.selectAccessory(@item.Id)">
+                                    <div class="col" data-bind="click: () => config.selectAccessory(@item.Id)">
                                         <h5 class="card-title">@Html.DisplayFor(_ => item.Name)</h5>
                                         <h6 class="card-text">@Html.DisplayFor(_ => item.Price)</h6>
                                     </div>
@@ -56,16 +56,6 @@
 {
     <script id="@Constants.PartialView.ScriptContentId" type="text/javascript">
         $(document).ready(function () {
-            let accessories = @Html.Raw(Json.Encode(Model.Accessories));
-            let selectedEngineSetting = @Html.Raw(Json.Encode(Model.SelectedEngineSetting));
-            let selectedPaint = @Html.Raw(Json.Encode(Model.SelectedPaint));
-            let selectedRims = @Html.Raw(Json.Encode(Model.SelectedRims));
-            let viewModel = new ConfigurationViewModel({ accessories: accessories, selectedEngineSetting: selectedEngineSetting, selectedPaint: selectedPaint, selectedRims: selectedRims });
-
-            let partialContentNode = document.getElementById('partialContent');
-            ko.cleanNode(partialContentNode);
-            ko.applyBindings({ configViewModel: viewModel }, partialContentNode);
-
             $('#continueButton').click(function (event) {
                 event.preventDefault();
                 let visibleTargetUrl = $(this).attr('href');
@@ -73,13 +63,13 @@
 
                 console.log('loading partial ' + targetUrl);
                 $.get(targetUrl, function (data) {
-                    replaceConfigurationContent(data, visibleTargetUrl, $('#@Constants.PartialView.ScriptContentId'));
+                    configurationView.replaceConfigurationContent(data, visibleTargetUrl, '@Constants.ConfigurationViewKind.Exterior', $('#@Constants.PartialView.ScriptContentId'));
                 });
             });
 
             $(window).on('beforeunload', function () {
                 let antiForgeryToken = getAntiForgeryToken($(document));
-                let selectedAccessories = viewModel.selectedAccessoryIds;
+                let selectedAccessories = configurationView.viewModel.selectedAccessoryIds;
                 saveViewModel('/Accessories/SetSelectedAccessories', selectedAccessories.length > 0 ? ko.toJSON(selectedAccessories) : null, antiForgeryToken)
                     .fail((error) => {
                         console.log('failed to set selected accessories: ' + error.responseText + ' (' + error.statusText + ')');

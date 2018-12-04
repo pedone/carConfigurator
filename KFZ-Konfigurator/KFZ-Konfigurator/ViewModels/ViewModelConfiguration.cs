@@ -8,7 +8,7 @@ namespace KFZ_Konfigurator.ViewModels
 {
     public class ViewModelConfiguration
     {
-        public CarModelViewModel CarModel { get; set; }
+        public SimpleCarModelViewModel CarModel { get; set; }
         public int EngineSettingsId { get; set; } = -1;
         public int PaintId { get; set; } = -1;
         public int RimId { get; set; } = -1;

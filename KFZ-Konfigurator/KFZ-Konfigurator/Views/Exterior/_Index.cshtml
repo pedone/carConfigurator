@@ -21,9 +21,9 @@
             <div class="row">
                 @foreach (var item in currentPaints)
                 {
-                    <div class="paintContainer" data-bind="click: () => configViewModel.selectPaint(@item.Id)">
+                    <div class="paintContainer" data-bind="click: () => config.selectPaint(@item.Id)">
                         <input type="radio" name="paintOptions" value="@item.Id"
-                               data-bind="checked: configViewModel.selectedPaintId, css: { checked: configViewModel.selectedPaintId() == @item.Id }" />
+                               data-bind="checked: config.selectedPaintId, css: { checked: config.selectedPaintId() == @item.Id }" />
                         <figure class="figure m-1">
                             <img style="background: @item.Color" class="border-0" />
                             <figcaption class="figure-caption">@Html.DisplayFor(_ => item.Name)</figcaption>
@@ -40,7 +40,7 @@
         {
             <tr>
                 <th>
-                    <input type="radio" name="rimOptions" class="mr-2" value="@item.Id" data-bind="checked: configViewModel.selectedRimsId" />
+                    <input type="radio" name="rimOptions" class="mr-2" value="@item.Id" data-bind="checked: config.selectedRimsId" />
                     <label>@Html.DisplayFor(_ => item.Size) @LocalizationManager.Localize("General_RimSizeUnit")</label>
                 </th>
                 <td>
@@ -64,16 +64,6 @@
 {
     <script id="@Constants.PartialView.ScriptContentId" type="text/javascript">
         $(document).ready(function () {
-            let selectedAccessories = @Html.Raw(Json.Encode(Model.SelectedAccessories));
-            let selectedEngineSetting = @Html.Raw(Json.Encode(Model.SelectedEngineSetting));
-            let paints = @Html.Raw(Json.Encode(Model.Paints));
-            let rims = @Html.Raw(Json.Encode(Model.Rims));
-            let viewModel = new ConfigurationViewModel({ paints: paints, rims: rims, selectedAccessories: selectedAccessories, selectedEngineSetting: selectedEngineSetting });
-
-            let partialContentNode = document.getElementById('partialContent');
-            ko.cleanNode(partialContentNode);
-            ko.applyBindings({ configViewModel: viewModel }, partialContentNode);
-            
             $('#continueButton').click(function (event) {
                 event.preventDefault();
                 let visibleTargetUrl = $(this).attr('href');
@@ -81,13 +71,13 @@
 
                 console.log('loading partial ' + targetUrl);
                 $.get(targetUrl, function (data) {
-                    replaceConfigurationContent(data, visibleTargetUrl, $('#@Constants.PartialView.ScriptContentId'));
+                    configurationView.replaceConfigurationContent(data, visibleTargetUrl, '@Constants.ConfigurationViewKind.Overview', $('#@Constants.PartialView.ScriptContentId'), false);
                 });
             });
 
             $(window).on('beforeunload', function () {
                 let antiForgeryToken = getAntiForgeryToken($(document));
-                let sendData = { paintId: viewModel.selectedPaintId(), rimId: viewModel.selectedRimsId() };
+                let sendData = { paintId: configurationView.viewModel.selectedPaintId(), rimId: configurationView.viewModel.selectedRimsId() };
                 saveViewModel('/Exterior/SetSelectedPaintAndRim', null, antiForgeryToken, sendData)
                     .fail((error) => {
                         console.log('failed to set selected paint and rims: ' + error.responseText + ' (' + error.statusText + ')');

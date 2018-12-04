@@ -19,13 +19,13 @@
                href="@Url.RouteUrl(Constants.Routes.EngineSettings, new { id = item.Id })">
                 <div class="card-body">
                     <h5 class="card-title">@Html.DisplayFor(_ => item.Series) @Html.DisplayFor(_ => item.BodyType) @Html.DisplayFor(_ => item.Year)</h5>
-                    <h6 class="card-subtitle">@LocalizationManager.Localize("General_From") @Html.DisplayFor(_ => item.BaseSettings.Price)</h6>
+                    <h6 class="card-subtitle">@LocalizationManager.Localize("General_From") @Html.DisplayFor(_ => item.MinPrice)</h6>
                     <div class="card-text mt-3">
                         <div>
-                            @LocalizationManager.Localize("TechnicalData_Consumption"): @Html.DisplayFor(_ => item.BaseSettings.Consumption) l/100 km
+                            @LocalizationManager.Localize("TechnicalData_Consumption"): @Html.DisplayFor(_ => item.Consumption) l/100 km
                         </div>
                         <div>
-                            @LocalizationManager.Localize("TechnicalData_Emissions"): @Html.DisplayFor(_ => item.BaseSettings.Emission) g/km
+                            @LocalizationManager.Localize("TechnicalData_Emissions"): @Html.DisplayFor(_ => item.Emissions) g/km
                         </div>
                     </div>
                 </div>
@@ -46,10 +46,9 @@
                 let antiForgeryToken = getAntiForgeryToken($(document));
                 saveViewModel('/Model/SetCarModel', id, antiForgeryToken)
                     .done(() => {
-                        console.log('loading partial ' + targetUrl);
                         $.get(targetUrl, function (data) {
-                            replaceConfigurationContent(data, visibleTargetUrl, $('#@Constants.PartialView.ScriptContentId'));
-                        });
+                            configurationView.replaceConfigurationContent(data, visibleTargetUrl, '@Constants.ConfigurationViewKind.EngineSettings', $('#@Constants.PartialView.ScriptContentId'));
+                        })
                     })
                     .fail((error) => {
                         console.log('failed to set car model: ' + error.responseText + ' (' + error.statusText + ')');

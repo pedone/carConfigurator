@@ -1,126 +1,195 @@
 ﻿@using KFZ_Konfigurator.Helper;
 @using KFZ_Konfigurator.ViewModels;
-@using KFZ_Konfigurator.Views;
 @model KFZ_Konfigurator.ViewModels.ConfigurationPageViewModel
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    ConfigurationViewKind viewKind = ConfigurationViewKind.ModelSelection;
-    Type modelType = Model.GetType();
-    if (typeof(EngineSettingsPageViewModel).IsAssignableFrom(modelType))
+    string viewKind = Constants.ConfigurationViewKind.ModelSelection;
+    Type modelType = Model.PartialViewModel.GetType();
+    if (modelType == typeof(EngineSettingsPageViewModel))
     {
-        viewKind = ConfigurationViewKind.EngineSettings;
+        viewKind = Constants.ConfigurationViewKind.EngineSettings;
     }
-    else if (typeof(AccessoriesPageViewModel).IsAssignableFrom(modelType))
+    else if (modelType == typeof(AccessoriesPageViewModel))
     {
-        viewKind = ConfigurationViewKind.Accessories;
+        viewKind = Constants.ConfigurationViewKind.Accessories;
     }
-    else if (typeof(ExteriorPageViewModel).IsAssignableFrom(modelType))
+    else if (modelType == typeof(ExteriorPageViewModel))
     {
-        viewKind = ConfigurationViewKind.Exterior;
+        viewKind = Constants.ConfigurationViewKind.Exterior;
     }
-    else if (typeof(ConfigurationOverviewPageViewModel).IsAssignableFrom(modelType))
+    else if (modelType == typeof(ConfigurationOverviewPageViewModel))
     {
-        viewKind = ConfigurationViewKind.Overview;
+        viewKind = Constants.ConfigurationViewKind.Overview;
     }
 
-    bool isModelSelection = viewKind == ConfigurationViewKind.ModelSelection;
-    string modelHeader = null;
-    if (!isModelSelection)
-    {
-        var activeModel = SessionData.ActiveConfiguration.CarModel;
-        if (activeModel == null)
-        {
-            throw new Exception("Model is not set");
-        }
-        modelHeader = $"{activeModel.Series} {activeModel.BodyType.ToString()} {activeModel.Year}";
-    }
+    var carModelId = (viewKind == Constants.ConfigurationViewKind.ModelSelection ? -1 : SessionData.ActiveConfiguration.CarModel?.Id ?? -1);
 }
 
-<div id="partialContent">
+<div id="@Constants.PartialView.PartialContentId">
     @Html.Partial(Model.PartialViewName, Model.PartialViewModel)
 </div>
 
 @section ConfigurationHeader {
-    <div class="bg-light">
+    <div id="configurationHeader" class="bg-light">
         <div class="container text-overlap-container">
             <img src="~/Resources/Images/audiA4Side.png" class="img-fluid" />
-            @if (!isModelSelection)
-            {
-                <h3 class="overlap-top-left">@modelHeader</h3>
-            }
+            @*@if (!isModelSelection)
+                {
+                    <h3 class="overlap-top-left">@modelHeader</h3>
+                }*@
         </div>
     </div>
     <div class="navbar bg-dark navbar-dark navbar-expand">
-        <div class="container @ViewHelper.If(isModelSelection, "invisible")">
+        @* TODO *@
+        @*<div class="container @ViewHelper.If(isModelSelection, "invisible")">*@
+        <div class="container">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#configurationNavbarToggleContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse" id="configurationNavbarToggleContent">
                 <div class="navbar-nav">
-                    <a href="@Url.RouteUrl(Constants.Routes.EngineSettings)" class="nav-item nav-link @ViewHelper.If(viewKind == ConfigurationViewKind.EngineSettings, "active")">@LocalizationManager.Localize("ConfigurationLayout_EngineSettings_Button")</a>
-                    <a href="@Url.RouteUrl(Constants.Routes.Accessories)" class="nav-item nav-link @ViewHelper.If(viewKind == ConfigurationViewKind.Accessories, "active")">@LocalizationManager.Localize("ConfigurationLayout_Accessories_Button")</a>
-                    <a href="@Url.RouteUrl(Constants.Routes.Exterior)" class="nav-item nav-link @ViewHelper.If(viewKind == ConfigurationViewKind.Exterior, "active")">@LocalizationManager.Localize("ConfigurationLayout_Exterior_Button")</a>
+                    <a href="@Url.RouteUrl(Constants.Routes.EngineSettings)" class="nav-item nav-link">@LocalizationManager.Localize("ConfigurationLayout_EngineSettings_Button")</a>
+                    <a href="@Url.RouteUrl(Constants.Routes.Accessories)" class="nav-item nav-link">@LocalizationManager.Localize("ConfigurationLayout_Accessories_Button")</a>
+                    <a href="@Url.RouteUrl(Constants.Routes.Exterior)" class="nav-item nav-link">@LocalizationManager.Localize("ConfigurationLayout_Exterior_Button")</a>
                 </div>
             </div>
         </div>
     </div>
 }
 
-@if (!isModelSelection)
-{
-    var activeModel = SessionData.ActiveConfiguration.CarModel;
-    @section CartOverview {
+@section CartOverview {
+    <div id="cartOverview" data-bind="if: currentViewKind() !== '@Constants.ConfigurationViewKind.ModelSelection'">
         <div class="card rounded-0 container">
             <div class="card-body">
                 <a href="@Url.RouteUrl(Constants.Routes.ModelOverview)" title="@LocalizationManager.Localize("ConfigurationLayout_GoToModelOverview")">
-                    <h5 class="card-title">@modelHeader</h5>
+                    <h5 class="card-title" data-bind="text: modelName"></h5>
                 </a>
                 <div class="card-text">
-                    <strong data-bind="if: (configViewModel.selectedAccessories().length > 0)">@LocalizationManager.Localize("ConfigurationLayout_Overview_Extras_Header"):</strong>
-                    <div data-bind="foreach: configViewModel.selectedAccessories">
+                    <strong data-bind="if: (selectedAccessories().length > 0)">@LocalizationManager.Localize("ConfigurationLayout_Overview_Extras_Header"):</strong>
+                    <div data-bind="foreach: selectedAccessories">
                         <div data-bind="text: name"></div>
                     </div>
                     <div>
-                        <strong>@LocalizationManager.Localize("ConfigurationLayout_Overview_Paint_Header")</strong>: <span data-bind="text: configViewModel.selectedPaint().name"></span>
+                        <strong>@LocalizationManager.Localize("ConfigurationLayout_Overview_Paint_Header")</strong>: <span data-bind="text: selectedPaint().name"></span>
                     </div>
                     <div>
-                        <strong>@LocalizationManager.Localize("ConfigurationLayout_Overview_Rims_Header")</strong>: <span data-bind="text: configViewModel.selectedRims().size"></span>
+                        <strong>@LocalizationManager.Localize("ConfigurationLayout_Overview_Rims_Header")</strong>: <span data-bind="text: selectedRims().size"></span>
                     </div>
                     <div class="mt-3">
-                        <strong>@LocalizationManager.Localize("ConfigurationLayout_BasePrice_Label")</strong>: <span data-bind="text: formatCurrency(configViewModel.basePrice())"></span>
+                        <strong>@LocalizationManager.Localize("ConfigurationLayout_BasePrice_Label")</strong>: <span data-bind="text: formatCurrency(basePrice())"></span>
                     </div>
                     <div>
-                        <strong>@LocalizationManager.Localize("ConfigurationLayout_ExtrasPrice_Label")</strong>: <span data-bind="text: formatCurrency(configViewModel.extrasPrice())"></span>
+                        <strong>@LocalizationManager.Localize("ConfigurationLayout_ExtrasPrice_Label")</strong>: <span data-bind="text: formatCurrency(extrasPrice())"></span>
                     </div>
                     <div>
-                        <strong>@LocalizationManager.Localize("ConfigurationLayout_Price_Label")</strong>: <span data-bind="text: formatCurrency(configViewModel.fullPrice())"></span>
+                        <strong>@LocalizationManager.Localize("ConfigurationLayout_Price_Label")</strong>: <span data-bind="text: formatCurrency(fullPrice())"></span>
                     </div>
                 </div>
             </div>
-            @if (viewKind != ConfigurationViewKind.Overview)
-            {
-                <a href="@Url.RouteUrl(Constants.Routes.ConfigurationOverview)" class="btn btn-info row">@LocalizationManager.Localize("ConfigurationLayout_GoToOverview")</a>
-            }
+            @*@if (viewKind != ConfigurationViewKind.Overview)
+                {
+                    <a href="@Url.RouteUrl(Constants.Routes.ConfigurationOverview)" class="btn btn-info row">@LocalizationManager.Localize("ConfigurationLayout_GoToOverview")</a>
+                }*@
         </div>
-    }
+    </div>
 }
 
 @section scripts {
-    <script type="text/javascript" src="@Url.Content("/Scripts/app/KoExtenders.js")"></script>
+    <script type="text/javascript" src="@Url.Content("/Scripts/app/KoExtensions.js")"></script>
     <script type="text/javascript" src="@Url.Content("/Scripts/app/Helper.js")"></script>
     <script type="text/javascript" src="@Url.Content("/Scripts/app/ConfigurationOverviewViewModel.js")"></script>
     <script type="text/javascript" src="@Url.Content("/Scripts/app/ConfigurationViewModel.js")"></script>
     <script type="text/javascript">
-        function replaceConfigurationContent(data, url, scriptElement = null) {
-            console.debug('replacing partial configuration content for url ' + url);
-            if (scriptElement) {
-                scriptElement.replaceWith(data.ScriptContent);
+        /** @@enum {string} */
+        let VIEW_KIND = {
+            ModelSelection: '@Constants.ConfigurationViewKind.ModelSelection',
+            EngineSettings: '@Constants.ConfigurationViewKind.EngineSettings',
+            Accessories: '@Constants.ConfigurationViewKind.Accessories',
+            Exterior: '@Constants.ConfigurationViewKind.Exterior',
+        };
+
+        /** @@type {{viewModel: ConfigurationViewModel, replaceConfigurationContent: Function, applyViewModelToPartialContent: Function}} */
+        let configurationView = {};
+        (function () {
+            let partialContent = document.getElementById('@Constants.PartialView.PartialContentId');
+            let configurationHeader = document.getElementById('configurationHeader');
+            let cartOverview = document.getElementById('cartOverview');
+
+            configurationView.viewModel = new ConfigurationViewModel('@viewKind');
+            configurationView.replaceConfigurationContent = function (data, url, viewKind, scriptElement = null, reapplyViewModel = true) {
+                //update viewmodel
+                let updateViewKind = () => {
+                    //update the viewkind after the configuration view model has been loaded
+                    //once the view kind changed, the cart view elements and the bindings will be loaded
+                    console.debug('updating view kind: ' + viewKind);
+                    configurationView.viewModel.currentViewKind(viewKind)
+
+                    //first, replace the content
+                    console.debug('replacing partial configuration content for url ' + url);
+                    $('#@Constants.PartialView.PartialContentId').html(data.ViewContent);
+                    if (scriptElement) {
+                        console.debug('replacing scripts');
+                        scriptElement.replaceWith(data.ScriptContent);
+                    }
+                    //second, reapply the view model binding, so that the data bindings are applied to the content
+                    if (reapplyViewModel) {
+                        configurationView.applyViewModelToPartialContent();
+                    }
+                    window.history.pushState('object or string', 'Title', url);
+                }
+
+                if (!configurationView.viewModel.isInitialized) {
+                    loadConfigurationViewModel().done(() => { updateViewKind(); });
+                } else {
+                    updateViewKind();
+                }
+            };
+            configurationView.applyViewModelToPartialContent = function (data) {
+                //when replacing the content, the bindings are not applied to the new content
+                //we have to reapply the bindings (only to partial content) to make the new content work
+                data = data || {};
+                data.config = configurationView.viewModel;
+
+                console.debug('applying view model to partial content');
+                //console.log(data);
+                ko.cleanNode(partialContent);
+                ko.applyBindings(data, partialContent);
+            };
+
+            function loadConfigurationViewModel () {
+                console.debug('loading configuration view model');
+                return $.get('@Url.RouteUrl(Constants.Routes.GetConfigurationViewModel)', function (data) {
+                    configurationView.viewModel.init({
+                        engineSettings: data.EngineSettings,
+                        accessories: data.Accessories,
+                        paints: data.Paints,
+                        rims: data.Rims,
+                        modelName: data.ModelName
+                    });
+                }).fail(function (error) {
+                    console.error('configurationViewModel could not be loaded: ' + error.responseText + '(' + error.statusText + ')');
+                });
             }
-            $('#partialContent').html(data.ViewContent);
-            window.history.pushState('object or string', 'Title', url);
-        }
+
+            function reapplyAllContext() {
+                ko.cleanNode(configurationHeader);
+                ko.cleanNode(cartOverview);
+                ko.cleanNode(partialContent);
+
+                console.debug('applying configuration view model to document');
+                ko.applyBindings(configurationView.viewModel, configurationHeader);
+                ko.applyBindings(configurationView.viewModel, cartOverview);
+                ko.applyBindings({ config: configurationView.viewModel }, partialContent);
+            }
+
+            if (@carModelId !== -1) {
+                loadConfigurationViewModel();
+            } else {
+                reapplyAllContext();
+            }
+        })();
     </script>
     @Html.Partial(Model.PartialViewName, Model.PartialViewModel, new ViewDataDictionary { { Constants.PartialView.RenderScripts, true } })
 }

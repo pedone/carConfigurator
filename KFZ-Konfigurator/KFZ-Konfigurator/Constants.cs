@@ -15,6 +15,7 @@ namespace KFZ_Konfigurator
         {
             public const string RenderScripts = nameof(RenderScripts);
             public const string ScriptContentId = nameof(ScriptContentId);
+            public const string PartialContentId = nameof(PartialContentId);
         }
 
         public static class Routes
@@ -33,6 +34,7 @@ namespace KFZ_Konfigurator
             public const string ViewOrderAfterPlaced = nameof(ViewOrderAfterPlaced);
             public const string OrderList = nameof(OrderList);
             public const string Home = nameof(Home);
+            public const string GetConfigurationViewModel = nameof(GetConfigurationViewModel);
         }
         public static class SubSeries
         {
@@ -46,6 +48,15 @@ namespace KFZ_Konfigurator
             public const string EngineSettingsPartialIndex = "~/Views/EngineSettings/_Index.cshtml";
             public const string ExteriorPartialIndex = "~/Views/Exterior/_Index.cshtml";
             public const string ConfigurationOverviewPartial = "~/Views/ConfigurationOverview/_Index.cshtml";
+        }
+
+        public static class ConfigurationViewKind
+        {
+            public const string ModelSelection = nameof(ModelSelection);
+            public const string Accessories = nameof(Accessories);
+            public const string Exterior = nameof(Exterior);
+            public const string EngineSettings = nameof(EngineSettings);
+            public const string Overview = nameof(Overview);
         }
     }
 }

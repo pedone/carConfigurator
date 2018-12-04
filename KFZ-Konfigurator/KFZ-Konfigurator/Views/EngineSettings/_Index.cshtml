@@ -15,7 +15,7 @@
         {
             <a class="list-group-item list-group-item-light list-group-item-action rounded-0 d-flex align-items-lg-center @ViewHelper.If(item.IsSelected, "active")"
                data-toggle="list"
-               data-bind="click: () => configViewModel.selectEngineSettings(@item.Id)">
+               data-bind="click: () => config.selectEngineSettings(@item.Id)">
                 <div class="flex-column w-100 align-items-lg-start">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">@($"{Html.DisplayFor(_ => item.Engine.Liter)} {LocalizationManager.LocalizeCategory<EngineCategory>(item.Engine.EngineKind)} {Html.DisplayFor(_ => item.Gears)}{LocalizationManager.Localize("TechnicalData_Transmission_Suffix")}")</h5>
@@ -65,44 +65,32 @@
 @if (renderScripts)
 {
     <script id="@Constants.PartialView.ScriptContentId" type="text/javascript">
-        $(document).ready(function () {
-            let engineSettings = @Html.Raw(Json.Encode(Model.EngineSettings));
-            let selectedAccessories = @Html.Raw(Json.Encode(Model.SelectedAccessories));
-            let selectedPaint = @Html.Raw(Json.Encode(Model.SelectedPaint));
-            let selectedRims = @Html.Raw(Json.Encode(Model.SelectedRims));
-            let viewModel = new ConfigurationViewModel({ engineSettings: engineSettings, selectedAccessories: selectedAccessories, selectedPaint: selectedPaint, selectedRims: selectedRims });
+        $('#continueButton').click(function (event) {
+            event.preventDefault();
+            let visibleTargetUrl = $(this).attr('href');
+            let targetUrl = $(this).data('href-partial');
 
-            let partialContentNode = document.getElementById('partialContent');
-            ko.cleanNode(partialContentNode);
-            ko.applyBindings({ configViewModel: viewModel }, partialContentNode);
+            console.log('loading partial ' + targetUrl);
+            $.get(targetUrl, function (data) {
+                configurationView.replaceConfigurationContent(data, visibleTargetUrl, '@Constants.ConfigurationViewKind.Accessories', $('#@Constants.PartialView.ScriptContentId'));
+            });
+        });
 
-            $('#continueButton').click(function (event) {
-                event.preventDefault();
-                let visibleTargetUrl = $(this).attr('href');
-                let targetUrl = $(this).data('href-partial');
+        let selectedEngineId = configurationView.viewModel.selectedEngineId;
+        $(window).on('beforeunload', function () {
+            if (selectedEngineId === configurationView.viewModel.selectedEngineSettings().id) {
+                console.debug('engine settings did not change');
+                //skip if the selected engine didn't change
+                return;
+            }
 
-                console.log('loading partial ' + targetUrl);
-                $.get(targetUrl, function (data) {
-                    replaceConfigurationContent(data, visibleTargetUrl, $('#@Constants.PartialView.ScriptContentId'));
+            let antiForgeryToken = getAntiForgeryToken($(document));
+            saveViewModel('/EngineSettings/SetSelectedEngineSettings', configurationView.viewModel.selectedEngineSettings().id, antiForgeryToken)
+                .fail((error) => {
+                    console.log('failed to set selected engine: ' + error.responseText + ' (' + error.statusText + ')');
+                    // TODO randomly triggered, maybe because of antiForgeryValidation
+                    alert('something went wrong. see console for details');
                 });
-            });
-
-            let selectedEngineId = viewModel.selectedEngineId;
-            $(window).on('beforeunload', function () {
-                if (selectedEngineId === viewModel.selectedEngineSettings().id) {
-                    console.debug('engine settings did not change');
-                    //skip if the selected engine didn't change
-                    return;
-                }
-
-                let antiForgeryToken = getAntiForgeryToken($(document));
-                saveViewModel('/EngineSettings/SetSelectedEngineSettings', viewModel.selectedEngineSettings().id, antiForgeryToken)
-                    .fail((error) => {
-                        console.log('failed to set selected engine: ' + error.responseText + ' (' + error.statusText + ')');
-                        // TODO randomly triggered, maybe because of antiForgeryValidation
-                        alert('something went wrong. see console for details');
-                    });
-            });
         });
     </script>
 }

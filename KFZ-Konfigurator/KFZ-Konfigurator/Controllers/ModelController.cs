@@ -19,16 +19,21 @@ namespace KFZ_Konfigurator.Controllers
         [Route("configuration/models", Name = Constants.Routes.ModelOverview)]
         public ActionResult Index()
         {
+            return View("~/Views/Configuration/Index.cshtml", new ConfigurationPageViewModel
+            {
+                PartialViewName = "~/Views/Model/_Index.cshtml",
+                PartialViewModel = BuildViewModel()
+            });
+        }
+
+        private ViewModelBase BuildViewModel()
+        {
             using (var context = new CarConfiguratorEntityContext())
             {
-                return View("~/Views/Configuration/Index.cshtml", new ConfigurationPageViewModel
+                return new CarModelPageViewModel
                 {
-                    PartialViewName = "~/Views/Model/_Index.cshtml",
-                    PartialViewModel = new CarModelPageViewModel
-                    {
-                        CarModels = context.CarModels.ToList().Select(cur => new CarModelViewModel(cur)).ToList()
-                    }
-                });
+                    CarModels = context.CarModels.ToList().Select(cur => new SimpleCarModelViewModel(cur)).ToList()
+                };
             }
         }
 
@@ -36,23 +41,17 @@ namespace KFZ_Konfigurator.Controllers
         [Route("configuration/models/partial", Name = Constants.Routes.ModelOverviewPartial)]
         public JsonResult IndexPartial()
         {
-            using (var context = new CarConfiguratorEntityContext())
-            {
-                var viewModel = new CarModelPageViewModel
-                {
-                    CarModels = context.CarModels.ToList().Select(cur => new CarModelViewModel(cur)).ToList()
-                };
-                ViewData[Constants.PartialView.RenderScripts] = false;
-                var viewContent = PartialView("~/Views/Model/_Index.cshtml", viewModel);
-                ViewData[Constants.PartialView.RenderScripts] = true;
-                var scriptContent = PartialView("~/Views/Model/_Index.cshtml", viewModel);
+            var viewModel = BuildViewModel();
+            ViewData[Constants.PartialView.RenderScripts] = false;
+            var viewContent = PartialView("~/Views/Model/_Index.cshtml", viewModel);
+            ViewData[Constants.PartialView.RenderScripts] = true;
+            var scriptContent = PartialView("~/Views/Model/_Index.cshtml", viewModel);
 
-                return Json(new
-                {
-                    ViewContent = viewContent,
-                    ScriptContent = scriptContent
-                }, JsonRequestBehavior.AllowGet);
-            }
+            return Json(new
+            {
+                ViewContent = viewContent,
+                ScriptContent = scriptContent
+            }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -75,7 +74,7 @@ namespace KFZ_Konfigurator.Controllers
                 SessionData.ActiveConfiguration.Reset();
 
                 //set model
-                SessionData.ActiveConfiguration.CarModel = new CarModelViewModel(selectedCarModel);
+                SessionData.ActiveConfiguration.CarModel = new SimpleCarModelViewModel(selectedCarModel);
 
                 //set default engine settings
                 var cheapestSettings = selectedCarModel.EngineSettings

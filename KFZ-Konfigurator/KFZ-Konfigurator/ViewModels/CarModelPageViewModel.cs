@@ -7,6 +7,6 @@ namespace KFZ_Konfigurator.ViewModels
 {
     public class CarModelPageViewModel : ViewModelBase
     {
-        public IEnumerable<CarModelViewModel> CarModels { get; set; }
+        public IEnumerable<SimpleCarModelViewModel> CarModels { get; set; }
     }
 }

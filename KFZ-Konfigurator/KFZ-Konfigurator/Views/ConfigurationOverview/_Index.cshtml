@@ -23,9 +23,9 @@
             <div class="input-group">
                 <input type="text" class="form-control"
                        placeholder="@LocalizationManager.Localize("ConfigurationOverviewView_OrderDescription_Placeholder")"
-                       data-bind="value: configOVW.configurationDescription" />
+                       data-bind="value: configOVVM.configurationDescription" />
                 <div class="input-group-append">
-                    <button class="btn btn-primary" id="placeOrderButton" type="button" data-bind="click: configOVW.placeOrder">
+                    <button class="btn btn-primary" id="placeOrderButton" type="button" data-bind="click: configOVVM.placeOrder">
                         @LocalizationManager.Localize("ConfigurationOverviewView_PlaceOrder_Button")
                     </button>
                 </div>
@@ -43,10 +43,6 @@
 {
     <script id="@Constants.PartialView.ScriptContentId" type="text/javascript">
         $(document).ready(function () {
-            let accessories = @Html.Raw(Json.Encode(Model.Accessories));
-            let engineSetting = @Html.Raw(Json.Encode(Model.EngineSetting));
-            let paint = @Html.Raw(Json.Encode(Model.Paint));
-            let rims = @Html.Raw(Json.Encode(Model.Rims));
             let options = {
                 antiForgeryToken: getAntiForgeryToken($(document)),
                 placeOrderSuccess: function (targetUrl) {
@@ -56,15 +52,7 @@
                     $('#orderFailedAlert').attr('hidden', false);
                 }
             };
-            let configOverviewViewModel = new ConfigurationOverviewViewModel(options);
-            let configViewModel = new ConfigurationViewModel({ selectedAccessories: accessories, selectedEngineSetting: engineSetting, selectedPaint: paint, selectedRims: rims });
-
-            let partialContentNode = document.getElementById('partialContent');
-            ko.cleanNode(partialContentNode);
-            ko.applyBindings({
-                configViewModel: configViewModel,
-                configOVW: configOverviewViewModel
-            }, partialContentNode);
+            configurationView.applyViewModelToPartialContent({ configOVVM: new ConfigurationOverviewViewModel(options) });
         });
     </script>
 }

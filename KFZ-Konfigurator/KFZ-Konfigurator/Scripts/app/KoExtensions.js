@@ -25,3 +25,9 @@ ko.extenders.filterSelected = function (target) {
     }
     return result;
 };
+
+/** taken from https://stackoverflow.com/questions/16479637/knockout-cleannode-removes-jquery-event-bindings */
+ko.utils.domNodeDisposal.cleanExternalData = function () {
+    // Do nothing. Now any jQuery data associated with elements will
+    // not be cleaned up when the elements are removed from the DOM.
+};
