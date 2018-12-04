@@ -363,6 +363,7 @@
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
+    <None Include="Properties\PublishProfiles\Car-Configurator-Test - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\KFZ-Konfigurator20181127095945 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
