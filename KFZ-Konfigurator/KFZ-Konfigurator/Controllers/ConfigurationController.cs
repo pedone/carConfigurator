@@ -59,7 +59,18 @@ namespace KFZ_Konfigurator.ViewModels
                     Rims = rims,
                     Accessories = accessories,
                     EngineSettings = engineSettings,
-                    ModelName = modelName
+                    ModelName = modelName,
+                    Links = new ConfigurationDataViewModel.ConfigurationLinkData
+                    {
+                        EngineSettingsLink = Url.RouteUrl(Constants.Routes.EngineSettings, new { id = carModelId }),
+                        EngineSettingsLinkPartial = Url.RouteUrl(Constants.Routes.EngineSettingsPartial, new { id = carModelId }),
+                        AccessoriesLink = Url.RouteUrl(Constants.Routes.Accessories, new { id = carModelId }),
+                        AccessoriesLinkPartial = Url.RouteUrl(Constants.Routes.AccessoriesPartial, new { id = carModelId }),
+                        ExteriorLink = Url.RouteUrl(Constants.Routes.Exterior, new { id = carModelId }),
+                        ExteriorLinkPartial = Url.RouteUrl(Constants.Routes.ExteriorPartial, new { id = carModelId }),
+                        OverviewLink = Url.RouteUrl(Constants.Routes.ConfigurationOverview, new { id = carModelId }),
+                        OverviewLinkPartial = Url.RouteUrl(Constants.Routes.ConfigurationOverviewPartial, new { id = carModelId })
+                    }
                 };
             }
         }

@@ -52,9 +52,8 @@
 
     <div class="d-flex justify-content-end mt-3">
         <a class="btn btn-outline-dark"
-           id="continueButton"
-           href="@Url.RouteUrl(Constants.Routes.ConfigurationOverview)"
-           data-href-partial="@Url.RouteUrl(Constants.Routes.ConfigurationOverviewPartial)">
+           data-bind="click: (d, e) => config.linkClick(config.links.overviewLink, config.links.overviewLinkPartial, '@Constants.ConfigurationViewKind.Overview', e, false),
+                        attr: { href: config.links.overviewLink, 'data-href-partial': config.links.overviewLinkPartial }">
             @LocalizationManager.Localize("ExteriorView_ContinueToOverview_Button")
         </a>
     </div>
@@ -63,18 +62,6 @@
 @if (renderScripts)
 {
     <script id="@Constants.PartialView.ScriptContentId" type="text/javascript">
-        $(document).ready(function () {
-            $('#continueButton').click(function (event) {
-                event.preventDefault();
-                let visibleTargetUrl = $(this).attr('href');
-                let targetUrl = $(this).data('href-partial');
-
-                console.log('loading partial ' + targetUrl);
-                $.get(targetUrl, function (data) {
-                    configurationView.replaceConfigurationContent(data, visibleTargetUrl, '@Constants.ConfigurationViewKind.Overview', $('#@Constants.PartialView.ScriptContentId'), false);
-                });
-            });
-
             $(window).on('beforeunload', function () {
                 let antiForgeryToken = getAntiForgeryToken($(document));
                 let sendData = { paintId: configurationView.viewModel.selectedPaintId(), rimId: configurationView.viewModel.selectedRimsId() };

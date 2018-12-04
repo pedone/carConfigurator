@@ -44,9 +44,8 @@
 
     <div class="d-flex justify-content-end mt-3">
         <a class="btn btn-outline-dark"
-           id="continueButton"
-           href="@Url.RouteUrl(Constants.Routes.Exterior)"
-           data-href-partial="@Url.RouteUrl(Constants.Routes.ExteriorPartial)">
+           data-bind="click: (d, e) => config.linkClick(config.links.exteriorLink, config.links.exteriorLinkPartial, '@Constants.ConfigurationViewKind.Exterior', e),
+                        attr: { href: config.links.exteriorLink, 'data-href-partial': config.links.exteriorLinkPartial }">
             @LocalizationManager.Localize("AccessoriesView_ContinueToExterior_Button")
         </a>
     </div>
@@ -56,17 +55,6 @@
 {
     <script id="@Constants.PartialView.ScriptContentId" type="text/javascript">
         $(document).ready(function () {
-            $('#continueButton').click(function (event) {
-                event.preventDefault();
-                let visibleTargetUrl = $(this).attr('href');
-                let targetUrl = $(this).data('href-partial');
-
-                console.log('loading partial ' + targetUrl);
-                $.get(targetUrl, function (data) {
-                    configurationView.replaceConfigurationContent(data, visibleTargetUrl, '@Constants.ConfigurationViewKind.Exterior', $('#@Constants.PartialView.ScriptContentId'));
-                });
-            });
-
             $(window).on('beforeunload', function () {
                 let antiForgeryToken = getAntiForgeryToken($(document));
                 let selectedAccessories = configurationView.viewModel.selectedAccessoryIds;

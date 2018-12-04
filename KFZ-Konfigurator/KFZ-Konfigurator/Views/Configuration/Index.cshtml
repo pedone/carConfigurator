@@ -32,27 +32,39 @@
 </div>
 
 @section ConfigurationHeader {
-    <div id="configurationHeader" class="bg-light">
-        <div class="container text-overlap-container">
-            <img src="~/Resources/Images/audiA4Side.png" class="img-fluid" />
-            @*@if (!isModelSelection)
-                {
-                    <h3 class="overlap-top-left">@modelHeader</h3>
-                }*@
+    <div id="configurationHeader">
+        <div class="bg-light">
+            <div class="container text-overlap-container">
+                <img src="~/Resources/Images/audiA4Side.png" class="img-fluid" />
+                <h3 class="overlap-top-left" data-bind="text: modelName"></h3>
+            </div>
         </div>
-    </div>
-    <div class="navbar bg-dark navbar-dark navbar-expand">
-        @* TODO *@
-        @*<div class="container @ViewHelper.If(isModelSelection, "invisible")">*@
-        <div class="container">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#configurationNavbarToggleContent">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse" id="configurationNavbarToggleContent">
-                <div class="navbar-nav">
-                    <a href="@Url.RouteUrl(Constants.Routes.EngineSettings)" class="nav-item nav-link">@LocalizationManager.Localize("ConfigurationLayout_EngineSettings_Button")</a>
-                    <a href="@Url.RouteUrl(Constants.Routes.Accessories)" class="nav-item nav-link">@LocalizationManager.Localize("ConfigurationLayout_Accessories_Button")</a>
-                    <a href="@Url.RouteUrl(Constants.Routes.Exterior)" class="nav-item nav-link">@LocalizationManager.Localize("ConfigurationLayout_Exterior_Button")</a>
+        <div class="navbar bg-dark navbar-dark navbar-expand">
+            <div class="container" data-bind="css: { invisible: currentViewKind() === '@Constants.ConfigurationViewKind.ModelSelection' }">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#configurationNavbarToggleContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse" id="configurationNavbarToggleContent">
+                    <div class="navbar-nav">
+                        <a class="nav-item nav-link"
+                           data-bind="click: (d, e) => linkClick(links.engineSettingsLink, links.engineSettingsLinkPartial, '@Constants.ConfigurationViewKind.EngineSettings', e),
+                                        attr: { href: links.engineSettingsLink, 'data-href-partial': links.engineSettingsLinkPartial },
+                                        css: { active: currentViewKind() === '@Constants.ConfigurationViewKind.EngineSettings' }">
+                            @LocalizationManager.Localize("ConfigurationLayout_EngineSettings_Button")
+                        </a>
+                        <a class="nav-item nav-link"
+                           data-bind="click: (d, e) => linkClick(links.accessoriesLink, links.accessoriesLinkPartial, '@Constants.ConfigurationViewKind.Accessories', e),
+                                        attr: { href: links.accessoriesLink, 'data-href-partial': links.accessoriesLinkPartial },
+                                        css: { active: currentViewKind() === '@Constants.ConfigurationViewKind.Accessories' }">
+                            @LocalizationManager.Localize("ConfigurationLayout_Accessories_Button")
+                        </a>
+                        <a class="nav-item nav-link"
+                           data-bind="click: (d, e) => linkClick(links.exteriorLink, links.exteriorLinkPartial, '@Constants.ConfigurationViewKind.Exterior', e),
+                                        attr: { href: links.exteriorLink, 'data-href-partial': links.exteriorLinkPartial },
+                                        css: { active: currentViewKind() === '@Constants.ConfigurationViewKind.Exterior' }">
+                            @LocalizationManager.Localize("ConfigurationLayout_Exterior_Button")
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,39 +72,40 @@
 }
 
 @section CartOverview {
-    <div id="cartOverview" data-bind="if: currentViewKind() !== '@Constants.ConfigurationViewKind.ModelSelection'">
-        <div class="card rounded-0 container">
-            <div class="card-body">
-                <a href="@Url.RouteUrl(Constants.Routes.ModelOverview)" title="@LocalizationManager.Localize("ConfigurationLayout_GoToModelOverview")">
-                    <h5 class="card-title" data-bind="text: modelName"></h5>
-                </a>
-                <div class="card-text">
-                    <strong data-bind="if: (selectedAccessories().length > 0)">@LocalizationManager.Localize("ConfigurationLayout_Overview_Extras_Header"):</strong>
-                    <div data-bind="foreach: selectedAccessories">
-                        <div data-bind="text: name"></div>
-                    </div>
-                    <div>
-                        <strong>@LocalizationManager.Localize("ConfigurationLayout_Overview_Paint_Header")</strong>: <span data-bind="text: selectedPaint().name"></span>
-                    </div>
-                    <div>
-                        <strong>@LocalizationManager.Localize("ConfigurationLayout_Overview_Rims_Header")</strong>: <span data-bind="text: selectedRims().size"></span>
-                    </div>
-                    <div class="mt-3">
-                        <strong>@LocalizationManager.Localize("ConfigurationLayout_BasePrice_Label")</strong>: <span data-bind="text: formatCurrency(basePrice())"></span>
-                    </div>
-                    <div>
-                        <strong>@LocalizationManager.Localize("ConfigurationLayout_ExtrasPrice_Label")</strong>: <span data-bind="text: formatCurrency(extrasPrice())"></span>
-                    </div>
-                    <div>
-                        <strong>@LocalizationManager.Localize("ConfigurationLayout_Price_Label")</strong>: <span data-bind="text: formatCurrency(fullPrice())"></span>
-                    </div>
+    <div id="cartOverview" class="card rounded-0 container" data-bind="attr: { hidden: currentViewKind() === '@Constants.ConfigurationViewKind.ModelSelection'}">
+        <div class="card-body">
+            <a href="@Url.RouteUrl(Constants.Routes.ModelOverview)" title="@LocalizationManager.Localize("ConfigurationLayout_GoToModelOverview")">
+                <h5 class="card-title" data-bind="text: modelName"></h5>
+            </a>
+            <div class="card-text">
+                <span data-bind="text: selectedAccessories().length"></span>
+                <strong data-bind="if: selectedAccessories().length > 0">@LocalizationManager.Localize("ConfigurationLayout_Overview_Extras_Header"):</strong>
+                <div data-bind="foreach: selectedAccessories">
+                    <div data-bind="text: name"></div>
+                </div>
+                <div>
+                    <strong>@LocalizationManager.Localize("ConfigurationLayout_Overview_Paint_Header")</strong>: <span data-bind="text: selectedPaint().name"></span>
+                </div>
+                <div>
+                    <strong>@LocalizationManager.Localize("ConfigurationLayout_Overview_Rims_Header")</strong>: <span data-bind="text: selectedRims().size"></span>
+                </div>
+                <div class="mt-3">
+                    <strong>@LocalizationManager.Localize("ConfigurationLayout_BasePrice_Label")</strong>: <span data-bind="text: formatCurrency(basePrice())"></span>
+                </div>
+                <div>
+                    <strong>@LocalizationManager.Localize("ConfigurationLayout_ExtrasPrice_Label")</strong>: <span data-bind="text: formatCurrency(extrasPrice())"></span>
+                </div>
+                <div>
+                    <strong>@LocalizationManager.Localize("ConfigurationLayout_Price_Label")</strong>: <span data-bind="text: formatCurrency(fullPrice())"></span>
                 </div>
             </div>
-            @*@if (viewKind != ConfigurationViewKind.Overview)
-                {
-                    <a href="@Url.RouteUrl(Constants.Routes.ConfigurationOverview)" class="btn btn-info row">@LocalizationManager.Localize("ConfigurationLayout_GoToOverview")</a>
-                }*@
         </div>
+        <a class="btn btn-info row"
+           data-bind="click: (d, e) => linkClick(links.overviewLink, links.overviewLinkPartial, '@Constants.ConfigurationViewKind.Overview', e, false),
+                        attr: { href: links.overviewLink, 'data-href-partial': links.overviewLinkPartial },
+                        if: currentViewKind() !== '@Constants.ConfigurationViewKind.ModelSelection'">
+            @LocalizationManager.Localize("ConfigurationLayout_GoToOverview")
+        </a>
     </div>
 }
 
@@ -118,10 +131,10 @@
             let cartOverview = document.getElementById('cartOverview');
 
             configurationView.viewModel = new ConfigurationViewModel('@viewKind');
-            configurationView.replaceConfigurationContent = function (data, url, viewKind, scriptElement = null, reapplyViewModel = true) {
+            configurationView.replaceConfigurationContent = function (data, url, viewKind, reapplyViewModelContext = true) {
                 //update viewmodel
                 let updateViewKind = () => {
-                    //update the viewkind after the configuration view model has been loaded
+                    //update the viewKind after the configuration view model has been loaded
                     //once the view kind changed, the cart view elements and the bindings will be loaded
                     console.debug('updating view kind: ' + viewKind);
                     configurationView.viewModel.currentViewKind(viewKind)
@@ -129,21 +142,26 @@
                     //first, replace the content
                     console.debug('replacing partial configuration content for url ' + url);
                     $('#@Constants.PartialView.PartialContentId').html(data.ViewContent);
-                    if (scriptElement) {
-                        console.debug('replacing scripts');
-                        scriptElement.replaceWith(data.ScriptContent);
-                    }
-                    //second, reapply the view model binding, so that the data bindings are applied to the content
-                    if (reapplyViewModel) {
-                        configurationView.applyViewModelToPartialContent();
-                    }
+
+                    let scriptElement = $('@Constants.PartialView.ScriptContentId');
+                    console.debug('replacing scripts');
+                    scriptElement.replaceWith(data.ScriptContent);
+
                     window.history.pushState('object or string', 'Title', url);
                 }
 
                 if (!configurationView.viewModel.isInitialized) {
-                    loadConfigurationViewModel().done(() => { updateViewKind(); });
+                    loadConfigurationViewModel().done(() => {
+                        updateViewKind();
+                        //have to reapply the bindings either way if the configurationViewModel was just initialized
+                        reapplyAllBindings();
+                    });
                 } else {
                     updateViewKind();
+                    //second, reapply the view model binding, so that the data bindings are applied to the content
+                    if (reapplyViewModelContext) {
+                        configurationView.applyViewModelToPartialContent();
+                    }
                 }
             };
             configurationView.applyViewModelToPartialContent = function (data) {
@@ -154,7 +172,7 @@
 
                 console.debug('applying view model to partial content');
                 //console.log(data);
-                ko.cleanNode(partialContent);
+                ko.cleanNode.keepEvents(partialContent);
                 ko.applyBindings(data, partialContent);
             };
 
@@ -166,17 +184,28 @@
                         accessories: data.Accessories,
                         paints: data.Paints,
                         rims: data.Rims,
-                        modelName: data.ModelName
+                        modelName: data.ModelName,
+                        replaceConfigurationContent: configurationView.replaceConfigurationContent,
+                        links: {
+                            engineSettingsLink: data.Links.EngineSettingsLink,
+                            engineSettingsLinkPartial: data.Links.EngineSettingsLinkPartial,
+                            accessoriesLink: data.Links.AccessoriesLink,
+                            accessoriesLinkPartial: data.Links.AccessoriesLinkPartial,
+                            exteriorLink: data.Links.ExteriorLink,
+                            exteriorLinkPartial: data.Links.ExteriorLinkPartial,
+                            overviewLink: data.Links.OverviewLink,
+                            overviewLinkPartial: data.Links.OverviewLinkPartial,
+                        }
                     });
                 }).fail(function (error) {
                     console.error('configurationViewModel could not be loaded: ' + error.responseText + '(' + error.statusText + ')');
                 });
             }
 
-            function reapplyAllContext() {
+            function reapplyAllBindings() {
                 ko.cleanNode(configurationHeader);
                 ko.cleanNode(cartOverview);
-                ko.cleanNode(partialContent);
+                ko.cleanNode.keepEvents(partialContent);
 
                 console.debug('applying configuration view model to document');
                 ko.applyBindings(configurationView.viewModel, configurationHeader);
@@ -187,7 +216,7 @@
             if (@carModelId !== -1) {
                 loadConfigurationViewModel();
             } else {
-                reapplyAllContext();
+                reapplyAllBindings();
             }
         })();
     </script>

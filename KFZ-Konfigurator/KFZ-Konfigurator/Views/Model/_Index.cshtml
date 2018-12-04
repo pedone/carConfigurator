@@ -47,7 +47,7 @@
                 saveViewModel('/Model/SetCarModel', id, antiForgeryToken)
                     .done(() => {
                         $.get(targetUrl, function (data) {
-                            configurationView.replaceConfigurationContent(data, visibleTargetUrl, '@Constants.ConfigurationViewKind.EngineSettings', $('#@Constants.PartialView.ScriptContentId'));
+                            configurationView.replaceConfigurationContent(data, visibleTargetUrl, '@Constants.ConfigurationViewKind.EngineSettings');
                         })
                     })
                     .fail((error) => {

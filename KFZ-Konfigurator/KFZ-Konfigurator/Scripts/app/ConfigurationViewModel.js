@@ -55,84 +55,98 @@ class ConfigurationViewModel {
             }
         });
 
-        /**
-         * koObservable
-         * @type {string}
-         */
-        this.selectedPaintId;
+        // set default values for everything, so the view bindings don't complain
 
         /**
          * koObservable
          * @type {string}
          */
-        this.selectedRimsId;
+        this.selectedPaintId = ko.observable();
 
         /**
          * koObservable
+         * @type {string}
+         */
+        this.selectedRimsId = ko.observable();
+
+        /**
+         * koObservableArray
          * @type {Array.<ViewModel>}
          */
-        this.selectedAccessories;
+        this.selectedAccessories = ko.observableArray();
+
+        let defaultComputed = () => ko.computed(() => { return {}; });
+        /**
+         * koComputed
+         * @type {ViewModel}
+         */
+        this.selectedPaint = defaultComputed();
 
         /**
          * koComputed
          * @type {ViewModel}
          */
-        this.selectedPaint;
+        this.selectedRims = defaultComputed();
 
         /**
          * koComputed
          * @type {ViewModel}
          */
-        this.selectedRims;
-
-        /**
-         * koComputed
-         * @type {ViewModel}
-         */
-        this.selectedEngineSettings;
+        this.selectedEngineSettings = defaultComputed();
 
         /**
          * koComputed
          * @type {boolean}
          */
-        this.isAccessoryLimitReached;
+        this.isAccessoryLimitReached = defaultComputed();
 
         /**
          * Calculates the combined price of everything but the engine
          * koComputed
          * @type {number}
          */
-        this.extrasPrice;
+        this.extrasPrice = defaultComputed();
 
         /**
          * Just the engine price
          * koComputed
          * @type {number}
          */
-        this.basePrice;
+        this.basePrice = defaultComputed();
 
         /**
          * The base price combined with the extras price
          * koComputed
          * @type {number}
          */
-        this.fullPrice;
+        this.fullPrice = defaultComputed();
 
         /**
          * koObservable
          * @type {string}
          */
-        this.modelName;
+        this.modelName = ko.observable();
 
         /**
          * koObservable
          * @type {VIEW_KIND}
          */
         this.currentViewKind = ko.observable(viewKind);
+
+        /** @type {ConfigurationLinks} */
+        this.links = {};
+
+        /** @type {Function} */
+        this.replaceConfigurationContent = () => { };
     }
 
     /** @param {ConfigurationData} data */
     init(data) {
+        if (this._isInitialized) {
+            console.error('configurationViewModel is already initialized');
+            return;
+        }
+
         this._engineSettingsById = this._toViewModelDictionary(data.engineSettings);
         this._rimsById = this._toViewModelDictionary(data.rims);
         this._paintById = this._toViewModelDictionary(data.paints);
@@ -163,8 +177,9 @@ class ConfigurationViewModel {
         this.fullPrice = ko.computed(() => {
             return this.basePrice() + this.extrasPrice();
         });
-
-        this.modelName = ko.observable(data.modelName)
+        this.modelName = ko.observable(data.modelName);
+        this.links = data.links;
+        this.replaceConfigurationContent = data.replaceConfigurationContent;
 
         this._isInitialized = true;
     }
@@ -236,6 +251,22 @@ class ConfigurationViewModel {
         }
     }
 
+    /**
+     * @param {string} visibleUrl
+     * @param {string} targetUrl
+     * @param {string} targetViewKind
+     * @param {Event} event
+     * @param {boolean} reapplyViewModelContext
+     */
+    linkClick(visibleUrl, targetUrl, targetViewKind, event, reapplyViewModelContext) {
+        event.preventDefault();
+
+        console.debug('loading partial ' + targetUrl);
+        $.get(targetUrl, (data) => {
+            this.replaceConfigurationContent(data, visibleUrl, targetViewKind, reapplyViewModelContext);
+        });
+    }
+
     /** save any changes to this configuriation since the last save */
     saveChanges() {
         //TODO
@@ -272,4 +303,18 @@ class ConfigurationViewModel {
  * @property {Array.<ViewModelData>} rims
  * @property {Array.<ViewModelData>} selectedAccessories
  * @property {string} modelName
+ * @property {ConfigurationLinks} links
+ * @property {Function} replaceConfigurationContent
+ */
+
+/** 
+ * @typedef {Object} ConfigurationLinks
+ * @property {string} engineSettingsLink
+ * @property {string} engineSettingsLinkPartial
+ * @property {string} accessoriesLink
+ * @property {string} accessoriesLinkPartial
+ * @property {string} exteriorLink
+ * @property {string} exteriorLinkPartial
+ * @property {string} overviewLink
+ * @property {string} overviewLinkPartial
  */

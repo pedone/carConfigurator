@@ -54,9 +54,8 @@
 
     <div class="d-flex justify-content-end mt-3">
         <a class="btn btn-outline-dark"
-           id="continueButton"
-           href="@Url.RouteUrl(Constants.Routes.Accessories)"
-           data-href-partial="@Url.RouteUrl(Constants.Routes.AccessoriesPartial)">
+           data-bind="click: (d, e) => config.linkClick(config.links.accessoriesLink, config.links.accessoriesLinkPartial, '@Constants.ConfigurationViewKind.Accessories', e),
+                        attr: { href: config.links.accessoriesLink, 'data-href-partial': config.links.accessoriesLinkPartial }">
             @LocalizationManager.Localize("EngineSettingsView_ContinueToAccessories_Button")
         </a>
     </div>
@@ -65,17 +64,6 @@
 @if (renderScripts)
 {
     <script id="@Constants.PartialView.ScriptContentId" type="text/javascript">
-        $('#continueButton').click(function (event) {
-            event.preventDefault();
-            let visibleTargetUrl = $(this).attr('href');
-            let targetUrl = $(this).data('href-partial');
-
-            console.log('loading partial ' + targetUrl);
-            $.get(targetUrl, function (data) {
-                configurationView.replaceConfigurationContent(data, visibleTargetUrl, '@Constants.ConfigurationViewKind.Accessories', $('#@Constants.PartialView.ScriptContentId'));
-            });
-        });
-
         let selectedEngineId = configurationView.viewModel.selectedEngineId;
         $(window).on('beforeunload', function () {
             if (selectedEngineId === configurationView.viewModel.selectedEngineSettings().id) {
