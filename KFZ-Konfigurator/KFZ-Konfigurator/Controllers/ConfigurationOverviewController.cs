@@ -14,7 +14,7 @@ namespace KFZ_Konfigurator.Controllers
     {
         private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(typeof(ConfigurationOverviewController));
 
-        [Route("configuration/models/model-{id}/overview", Name = Constants.Routes.CurrentConfigurationOverview)]
+        [Route("configuration/models/model-{id}/overview", Name = Constants.Routes.ConfigurationOverview)]
         public ActionResult Index(int id)
         {
             if (!SessionData.ActiveConfiguration.IsValid(id, out string error))
@@ -23,6 +23,35 @@ namespace KFZ_Konfigurator.Controllers
                 return RedirectToRoute(Constants.Routes.ModelOverview);
             }
 
+            return View(Constants.Views.ConfigurationIndex, new ConfigurationPageViewModel
+            {
+                PartialViewName = Constants.Views.ConfigurationOverviewPartial,
+                PartialViewModel = BuildViewModel(id)
+            });
+        }
+
+        [HttpGet]
+        [Route("configuration/models/model-{id}/overview/partial", Name = Constants.Routes.ConfigurationOverviewPartial)]
+        public JsonResult IndexPartial(int id)
+        {
+            //TODO
+            //if (!SessionData.ActiveConfiguration.IsValid(id, out string error))
+            //{
+            //    Log.Error(error);
+            //    return RedirectToRoute(Constants.Routes.ModelOverview);
+            //}
+
+            var viewModel = BuildViewModel(id);
+            var view = ViewHelper.BuildPartialViewAndScriptJson(ControllerContext, Constants.Views.ConfigurationOverviewPartial, viewModel);
+            return Json(new
+            {
+                ViewContent = view.ViewContent,
+                ScriptContent = view.ScriptContent
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        private ConfigurationOverviewPageViewModel BuildViewModel(int id)
+        {
             using (var context = new CarConfiguratorEntityContext())
             {
                 var carModel = context.CarModels.First(cur => cur.Id == id);
@@ -55,7 +84,7 @@ namespace KFZ_Konfigurator.Controllers
                     Rims = rims
                 };
                 pageViewModel.InitPrice();
-                return View(pageViewModel);
+                return pageViewModel;
             }
         }
 

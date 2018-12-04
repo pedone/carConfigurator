@@ -6,5 +6,3 @@ TODO
 - car model filter
 - confirmation dialogs
 - azure pipeline deployment
-
-! - entities instead of db enums !

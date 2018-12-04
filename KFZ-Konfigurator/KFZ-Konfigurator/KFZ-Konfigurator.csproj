@@ -171,7 +171,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\AccessoriesController.cs" />
-    <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\ConfigurationOverviewController.cs" />
     <Compile Include="Controllers\ExteriorController.cs" />
     <Compile Include="Controllers\ModelController.cs" />
@@ -184,6 +183,7 @@
     </Compile>
     <Compile Include="Helper\MathHelper.cs" />
     <Compile Include="Helper\MiscHelper.cs" />
+    <Compile Include="Helper\ViewHelper.cs" />
     <Compile Include="Models\Accessory.cs">
       <DependentUpon>CarConfiguratorModel.tt</DependentUpon>
     </Compile>
@@ -408,9 +408,9 @@
     <Content Include="Views\Model\_Index.cshtml" />
     <Content Include="Views\Shared\_ConfigurationLayout.cshtml" />
     <Content Include="Views\EngineSettings\_Index.cshtml" />
-    <Content Include="Views\Accessories\Index.cshtml" />
-    <Content Include="Views\Exterior\Index.cshtml" />
-    <Content Include="Views\ConfigurationOverview\Index.cshtml" />
+    <Content Include="Views\Accessories\_Index.cshtml" />
+    <Content Include="Views\Exterior\_Index.cshtml" />
+    <Content Include="Views\ConfigurationOverview\_Index.cshtml" />
     <Content Include="Views\OrderList\Index.cshtml" />
     <Content Include="Views\OrderOverview\Index.cshtml" />
     <Content Include="Views\ConfigurationOverview\_ConfigurationOverview.cshtml" />

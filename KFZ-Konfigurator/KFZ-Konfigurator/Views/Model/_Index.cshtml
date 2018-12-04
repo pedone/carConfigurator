@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = LocalizationManager.Localize("ModelView_Title");
-    bool renderScripts = ViewBag.RenderScripts ?? ViewData["RenderScripts"] ?? false;
+    bool renderScripts = (bool)(ViewData[Constants.PartialView.RenderScripts] ?? false);
 }
 
 @if (!renderScripts)
@@ -13,7 +13,8 @@
     <div class="row container">
         @foreach (var item in Model.CarModels)
         {
-            <a class="card mb-2 col-md-4 rounded-0 car-model-link" data-id="@item.Id"
+            <a class="card mb-2 col-md-4 rounded-0 car-model-link"
+               data-id="@item.Id"
                data-href-partial="@Url.RouteUrl(Constants.Routes.EngineSettingsPartial, new { id = item.Id })"
                href="@Url.RouteUrl(Constants.Routes.EngineSettings, new { id = item.Id })">
                 <div class="card-body">
@@ -35,9 +36,9 @@
 
 @if (renderScripts)
 {
-    <script id="scriptContent" type="text/javascript">
+    <script id="@Constants.PartialView.ScriptContentId" type="text/javascript">
         $(document).ready(function () {
-            $('.car-model-link').click(function () {
+            $('.car-model-link').click(function (event) {
                 event.preventDefault();
                 let visibleTargetUrl = $(this).attr('href');
                 let targetUrl = $(this).data('href-partial');
@@ -47,8 +48,8 @@
                     .done(() => {
                         console.log('loading partial ' + targetUrl);
                         $.get(targetUrl, function (data) {
-                            replaceConfigurationContent(data, visibleTargetUrl, $('#scriptContent'));
-                        })
+                            replaceConfigurationContent(data, visibleTargetUrl, $('#@Constants.PartialView.ScriptContentId'));
+                        });
                     })
                     .fail((error) => {
                         console.log('failed to set car model: ' + error.responseText + ' (' + error.statusText + ')');

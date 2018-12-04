@@ -4,7 +4,7 @@
 
 @{
     ViewBag.Title = LocalizationManager.Localize("EngineSettingsView_Title");
-    bool renderScripts = ViewBag.RenderScripts ?? false;
+    bool renderScripts = (bool)(ViewData[Constants.PartialView.RenderScripts] ?? false);
 }
 
 @if (!renderScripts)
@@ -13,7 +13,7 @@
     <div class="list-group">
         @foreach (var item in Model.EngineSettings)
         {
-            <a class="list-group-item list-group-item-light list-group-item-action rounded-0 d-flex align-items-lg-center @MiscHelper.If(item.IsSelected, "active")"
+            <a class="list-group-item list-group-item-light list-group-item-action rounded-0 d-flex align-items-lg-center @ViewHelper.If(item.IsSelected, "active")"
                data-toggle="list"
                data-bind="click: () => configViewModel.selectEngineSettings(@item.Id)">
                 <div class="flex-column w-100 align-items-lg-start">
@@ -53,38 +53,56 @@
     </div>
 
     <div class="d-flex justify-content-end mt-3">
-        <a class="btn btn-outline-dark" href="@Url.RouteUrl(Constants.Routes.Accessories)">@LocalizationManager.Localize("EngineSettingsView_ContinueToAccessories_Button")</a>
+        <a class="btn btn-outline-dark"
+           id="continueButton"
+           href="@Url.RouteUrl(Constants.Routes.Accessories)"
+           data-href-partial="@Url.RouteUrl(Constants.Routes.AccessoriesPartial)">
+            @LocalizationManager.Localize("EngineSettingsView_ContinueToAccessories_Button")
+        </a>
     </div>
 }
 
 @if (renderScripts)
 {
-    <script id="scriptContent" type="text/javascript">
-        let engineSettings = @Html.Raw(Json.Encode(Model.EngineSettings));
-        let selectedAccessories = @Html.Raw(Json.Encode(Model.SelectedAccessories));
-        let selectedPaint = @Html.Raw(Json.Encode(Model.SelectedPaint));
-        let selectedRims = @Html.Raw(Json.Encode(Model.SelectedRims));
-        let viewModel = new ConfigurationViewModel({ engineSettings: engineSettings, selectedAccessories: selectedAccessories, selectedPaint: selectedPaint, selectedRims: selectedRims });
-
+    <script id="@Constants.PartialView.ScriptContentId" type="text/javascript">
         $(document).ready(function () {
-            ko.applyBindings({ configViewModel: viewModel });
-        });
+            let engineSettings = @Html.Raw(Json.Encode(Model.EngineSettings));
+            let selectedAccessories = @Html.Raw(Json.Encode(Model.SelectedAccessories));
+            let selectedPaint = @Html.Raw(Json.Encode(Model.SelectedPaint));
+            let selectedRims = @Html.Raw(Json.Encode(Model.SelectedRims));
+            let viewModel = new ConfigurationViewModel({ engineSettings: engineSettings, selectedAccessories: selectedAccessories, selectedPaint: selectedPaint, selectedRims: selectedRims });
 
-        let selectedEngineId = viewModel.selectedEngineId;
-        $(window).on('beforeunload', function () {
-            if (selectedEngineId === viewModel.selectedEngineSettings().id) {
-                console.debug('engine settings did not change');
-                //skip if the selected engine didn't change
-                return;
-            }
+            let partialContentNode = document.getElementById('partialContent');
+            ko.cleanNode(partialContentNode);
+            ko.applyBindings({ configViewModel: viewModel }, partialContentNode);
 
-            let antiForgeryToken = getAntiForgeryToken($(document));
-            saveViewModel('/EngineSettings/SetSelectedEngineSettings', viewModel.selectedEngineSettings().id, antiForgeryToken)
-                .fail((error) => {
-                    console.log('failed to set selected engine: ' + error.responseText + ' (' + error.statusText + ')');
-                    // TODO randomly triggered, maybe because of antiForgeryValidation
-                    alert('something went wrong. see console for details');
+            $('#continueButton').click(function (event) {
+                event.preventDefault();
+                let visibleTargetUrl = $(this).attr('href');
+                let targetUrl = $(this).data('href-partial');
+
+                console.log('loading partial ' + targetUrl);
+                $.get(targetUrl, function (data) {
+                    replaceConfigurationContent(data, visibleTargetUrl, $('#@Constants.PartialView.ScriptContentId'));
                 });
+            });
+
+            let selectedEngineId = viewModel.selectedEngineId;
+            $(window).on('beforeunload', function () {
+                if (selectedEngineId === viewModel.selectedEngineSettings().id) {
+                    console.debug('engine settings did not change');
+                    //skip if the selected engine didn't change
+                    return;
+                }
+
+                let antiForgeryToken = getAntiForgeryToken($(document));
+                saveViewModel('/EngineSettings/SetSelectedEngineSettings', viewModel.selectedEngineSettings().id, antiForgeryToken)
+                    .fail((error) => {
+                        console.log('failed to set selected engine: ' + error.responseText + ' (' + error.statusText + ')');
+                        // TODO randomly triggered, maybe because of antiForgeryValidation
+                        alert('something went wrong. see console for details');
+                    });
+            });
         });
     </script>
 }

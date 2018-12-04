@@ -42,9 +42,9 @@ namespace KFZ_Konfigurator.Controllers
                 {
                     CarModels = context.CarModels.ToList().Select(cur => new CarModelViewModel(cur)).ToList()
                 };
-                ViewBag.RenderScripts = false;
+                ViewData[Constants.PartialView.RenderScripts] = false;
                 var viewContent = PartialView("~/Views/Model/_Index.cshtml", viewModel);
-                ViewBag.RenderScripts = true;
+                ViewData[Constants.PartialView.RenderScripts] = true;
                 var scriptContent = PartialView("~/Views/Model/_Index.cshtml", viewModel);
 
                 return Json(new

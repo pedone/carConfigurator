@@ -53,15 +53,15 @@
         </div>
     </div>
     <div class="navbar bg-dark navbar-dark navbar-expand">
-        <div class="container @MiscHelper.If(isModelSelection, "invisible")">
+        <div class="container @ViewHelper.If(isModelSelection, "invisible")">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#configurationNavbarToggleContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse" id="configurationNavbarToggleContent">
                 <div class="navbar-nav">
-                    <a href="@Url.RouteUrl(Constants.Routes.EngineSettings)" class="nav-item nav-link @MiscHelper.If(viewKind == ConfigurationViewKind.EngineSettings, "active")">@LocalizationManager.Localize("ConfigurationLayout_EngineSettings_Button")</a>
-                    <a href="@Url.RouteUrl(Constants.Routes.Accessories)" class="nav-item nav-link @MiscHelper.If(viewKind == ConfigurationViewKind.Accessories, "active")">@LocalizationManager.Localize("ConfigurationLayout_Accessories_Button")</a>
-                    <a href="@Url.RouteUrl(Constants.Routes.Exterior)" class="nav-item nav-link @MiscHelper.If(viewKind == ConfigurationViewKind.Exterior, "active")">@LocalizationManager.Localize("ConfigurationLayout_Exterior_Button")</a>
+                    <a href="@Url.RouteUrl(Constants.Routes.EngineSettings)" class="nav-item nav-link @ViewHelper.If(viewKind == ConfigurationViewKind.EngineSettings, "active")">@LocalizationManager.Localize("ConfigurationLayout_EngineSettings_Button")</a>
+                    <a href="@Url.RouteUrl(Constants.Routes.Accessories)" class="nav-item nav-link @ViewHelper.If(viewKind == ConfigurationViewKind.Accessories, "active")">@LocalizationManager.Localize("ConfigurationLayout_Accessories_Button")</a>
+                    <a href="@Url.RouteUrl(Constants.Routes.Exterior)" class="nav-item nav-link @ViewHelper.If(viewKind == ConfigurationViewKind.Exterior, "active")">@LocalizationManager.Localize("ConfigurationLayout_Exterior_Button")</a>
                 </div>
             </div>
         </div>
@@ -101,7 +101,7 @@
             </div>
             @if (viewKind != ConfigurationViewKind.Overview)
             {
-                <a href="@Url.RouteUrl(Constants.Routes.CurrentConfigurationOverview)" class="btn btn-info row">@LocalizationManager.Localize("ConfigurationLayout_GoToOverview")</a>
+                <a href="@Url.RouteUrl(Constants.Routes.ConfigurationOverview)" class="btn btn-info row">@LocalizationManager.Localize("ConfigurationLayout_GoToOverview")</a>
             }
         </div>
     }
@@ -114,6 +114,7 @@
     <script type="text/javascript" src="@Url.Content("/Scripts/app/ConfigurationViewModel.js")"></script>
     <script type="text/javascript">
         function replaceConfigurationContent(data, url, scriptElement = null) {
+            console.debug('replacing partial configuration content for url ' + url);
             if (scriptElement) {
                 scriptElement.replaceWith(data.ScriptContent);
             }
@@ -121,5 +122,5 @@
             window.history.pushState('object or string', 'Title', url);
         }
     </script>
-    @Html.Partial(Model.PartialViewName, Model.PartialViewModel, new ViewDataDictionary { { "RenderScripts", true } })
+    @Html.Partial(Model.PartialViewName, Model.PartialViewModel, new ViewDataDictionary { { Constants.PartialView.RenderScripts, true } })
 }

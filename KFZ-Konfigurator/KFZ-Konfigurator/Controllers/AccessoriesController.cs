@@ -1,4 +1,5 @@
-﻿using KFZ_Konfigurator.Models;
+﻿using KFZ_Konfigurator.Helper;
+using KFZ_Konfigurator.Models;
 using KFZ_Konfigurator.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,34 @@ namespace KFZ_Konfigurator.Controllers
                 return RedirectToRoute(Constants.Routes.ModelOverview);
             }
 
+            return View(Constants.Views.ConfigurationIndex, new ConfigurationPageViewModel
+            {
+                PartialViewName = Constants.Views.AccessoriesPartialIndex,
+                PartialViewModel = BuildViewModel(id)
+            });
+        }
+
+        [HttpGet]
+        [Route("configuration/models/model-{id}/accessories/partial", Name = Constants.Routes.AccessoriesPartial)]
+        public JsonResult IndexPartial(int id)
+        {
+            //if (!SessionData.ActiveConfiguration.IsValid(id, out string error))
+            //{
+            //    Log.Error(error);
+            //    return RedirectToRoute(Constants.Routes.ModelOverview);
+            //}
+
+            var viewModel = BuildViewModel(id);
+            var view = ViewHelper.BuildPartialViewAndScriptJson(ControllerContext, Constants.Views.AccessoriesPartialIndex, viewModel);
+            return Json(new
+            {
+                ViewContent = view.ViewContent,
+                ScriptContent = view.ScriptContent
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        private AccessoriesPageViewModel BuildViewModel(int id)
+        {
             using (var context = new CarConfiguratorEntityContext())
             {
                 //accessories
@@ -50,14 +79,14 @@ namespace KFZ_Konfigurator.Controllers
                 //accessory categories
                 var accessoryCategories = context.Categories.OfType<AccessoryCategory>().Select(cur => cur.Name).ToList();
 
-                return View(new AccessoriesPageViewModel
+                return new AccessoriesPageViewModel
                 {
                     Accessories = accessories,
                     SelectedEngineSetting = selectedEngineSetting,
                     SelectedPaint = selectedPaint,
                     SelectedRims = selectedRims,
                     AccessoryCategories = accessoryCategories
-                });
+                };
             }
         }
 

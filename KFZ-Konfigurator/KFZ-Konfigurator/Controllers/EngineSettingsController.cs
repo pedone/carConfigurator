@@ -26,58 +26,35 @@ namespace KFZ_Konfigurator.Controllers
                 return RedirectToRoute(Constants.Routes.ModelOverview);
             }
 
-            using (var context = new CarConfiguratorEntityContext())
+            return View(Constants.Views.ConfigurationIndex, new ConfigurationPageViewModel
             {
-                var carModel = context.CarModels.First(cur => cur.Id == id);
-                //engine settings
-                var selectedId = SessionData.ActiveConfiguration.EngineSettingsId;
-                var settings = carModel.EngineSettings.ToList()
-                    .Select(cur => new EngineSettingsViewModel(cur) { IsSelected = (cur.Id == selectedId) })
-                    .OrderBy(cur => cur.Price)
-                    .ToList();
-
-                //accessories
-                var accessoryIds = SessionData.ActiveConfiguration.AccessoryIds;
-                IEnumerable<AccessoryViewModel> selectedAccessories = null;
-                if (accessoryIds.Any())
-                {
-                    selectedAccessories = context.Accessories.Where(cur => accessoryIds.Contains(cur.Id))
-                        .ToList()
-                        .Select(cur => new AccessoryViewModel(cur))
-                        .ToList();
-                }
-
-                //paint
-                PaintViewModel selectedPaint = new PaintViewModel(context.Paints.First(cur => cur.Id == SessionData.ActiveConfiguration.PaintId));
-
-                //rims
-                RimViewModel selectedRims = new RimViewModel(context.Rims.First(cur => cur.Id == SessionData.ActiveConfiguration.RimId));
-
-                var viewModel = new EngineSettingsPageViewModel
-                {
-                    EngineSettings = settings,
-                    SelectedAccessories = selectedAccessories,
-                    SelectedPaint = selectedPaint,
-                    SelectedRims = selectedRims
-                };
-                return View("~/Views/Configuration/Index.cshtml", new ConfigurationPageViewModel
-                {
-                    PartialViewName = "~/Views/EngineSettings/_Index.cshtml",
-                    PartialViewModel = viewModel
-                });
-            }
+                PartialViewName = Constants.Views.EngineSettingsPartialIndex,
+                PartialViewModel = BuildViewModel(id)
+            });
         }
 
         [HttpGet]
         [Route("configuration/models/model-{id}/enginesettings/partial", Name = Constants.Routes.EngineSettingsPartial)]
         public JsonResult IndexPartial(int id)
         {
+            //TODO
             //if (!SessionData.ActiveConfiguration.IsValid(id, out string error))
             //{
             //    Log.Error(error);
             //    return RedirectToRoute(Constants.Routes.ModelOverview);
             //}
 
+            var viewModel = BuildViewModel(id);
+            var view = ViewHelper.BuildPartialViewAndScriptJson(ControllerContext, Constants.Views.EngineSettingsPartialIndex, viewModel);
+            return Json(new
+            {
+                ViewContent = view.ViewContent,
+                ScriptContent = view.ScriptContent
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        private EngineSettingsPageViewModel BuildViewModel(int id)
+        {
             using (var context = new CarConfiguratorEntityContext())
             {
                 var carModel = context.CarModels.First(cur => cur.Id == id);
@@ -105,25 +82,13 @@ namespace KFZ_Konfigurator.Controllers
                 //rims
                 RimViewModel selectedRims = new RimViewModel(context.Rims.First(cur => cur.Id == SessionData.ActiveConfiguration.RimId));
 
-                var viewModel = new EngineSettingsPageViewModel
+                return new EngineSettingsPageViewModel
                 {
                     EngineSettings = settings,
                     SelectedAccessories = selectedAccessories,
                     SelectedPaint = selectedPaint,
                     SelectedRims = selectedRims
                 };
-
-                ModelState.Clear();
-                ViewBag.RenderScripts = false;
-                var viewContent = MiscHelper.RenderRazorViewToString(ControllerContext, "~/Views/EngineSettings/_Index.cshtml", viewModel);
-                ViewBag.RenderScripts = true;
-                var scriptContent = MiscHelper.RenderRazorViewToString(ControllerContext, "~/Views/EngineSettings/_Index.cshtml", viewModel);
-                
-                return Json(new
-                {
-                    ViewContent = viewContent,
-                    ScriptContent = scriptContent
-                }, JsonRequestBehavior.AllowGet);
             }
         }
 

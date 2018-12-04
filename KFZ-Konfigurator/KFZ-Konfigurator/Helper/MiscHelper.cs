@@ -12,11 +12,6 @@ namespace KFZ_Konfigurator.Helper
 {
     public static class MiscHelper
     {
-        public static string If(bool conditional, string data)
-        {
-            return conditional ? data : null;
-        }
-
         public static string EngineKindToFuelKind()
         {
             //TODO
@@ -48,23 +43,6 @@ namespace KFZ_Konfigurator.Helper
         {
             var projectBaseUrl = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, url.Content("~"));
             return new Uri(new Uri(projectBaseUrl), url.RouteUrl(Constants.Routes.ViewOrder, new { orderGuid = guid })).AbsoluteUri;
-        }
-
-        /// <summary>
-        /// taken from https://rhamesconsulting.com/2014/10/27/mvc-updating-multiple-partial-views-from-a-single-ajax-action/
-        /// </summary>
-        /// <returns></returns>
-        public static string RenderRazorViewToString(ControllerContext controllerContext, string viewName, object model)
-        {
-            controllerContext.Controller.ViewData.Model = model;
-            using (var stringWriter = new StringWriter())
-            {
-                var viewResult = ViewEngines.Engines.FindPartialView(controllerContext, viewName);
-                var viewContext = new ViewContext(controllerContext, viewResult.View, controllerContext.Controller.ViewData, controllerContext.Controller.TempData, stringWriter);
-                viewResult.View.Render(viewContext, stringWriter);
-                viewResult.ViewEngine.ReleaseView(controllerContext, viewResult.View);
-                return stringWriter.GetStringBuilder().ToString();
-            }
         }
     }
 }

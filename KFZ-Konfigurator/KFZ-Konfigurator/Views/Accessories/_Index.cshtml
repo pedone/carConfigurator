@@ -1,0 +1,92 @@
+﻿@using KFZ_Konfigurator.Models;
+@model KFZ_Konfigurator.ViewModels.AccessoriesPageViewModel
+
+@{
+    ViewBag.Title = LocalizationManager.Localize("AccessoriesView_Title");
+    bool renderScripts = (bool)(ViewData[Constants.PartialView.RenderScripts] ?? false);
+}
+
+@if (!renderScripts)
+{
+    @Html.AntiForgeryToken()
+    <div class="accordion" id="accessoriesAccordion">
+        @foreach (string curCategory in Model.AccessoryCategories)
+        {
+            <div class="card">
+                <div class="card-header btn d-flex align-items-start" role="button" data-target="@string.Format($"#collapse{curCategory}")" data-toggle="collapse">
+                    <h5 data-bind="with: { count: configViewModel.countCategory(configViewModel.selectedAccessories(), '@(curCategory)') }">
+                        @(LocalizationManager.LocalizeCategory<AccessoryCategory>(curCategory))
+                        <span class="badge badge-secondary" data-bind="text: count, css: { invisible: count === 0 }"></span>
+                    </h5>
+                </div>
+                <div class="collapse" data-parent="#accessoriesAccordion" id="@string.Format($"collapse{curCategory}")">
+                    <div class="card-body list-group list-group-flush pr-0">
+                        @foreach (var item in Model.Accessories.Where(cur => cur.Category == curCategory))
+                        {
+                            <div class="list-group-item">
+                                <div class="row">
+                                    <div class="col-auto align-items-center d-flex">
+                                        <input type="checkbox"
+                                               data-bind="checked: configViewModel.accessoriesById[@item.Id].isSelected, disable: configViewModel.isAccessoryLimitReached() && !configViewModel.accessoriesById[@item.Id].isSelected()" />
+                                    </div>
+                                    <div class="col" data-bind="click: () => configViewModel.selectAccessory(@item.Id)">
+                                        <h5 class="card-title">@Html.DisplayFor(_ => item.Name)</h5>
+                                        <h6 class="card-text">@Html.DisplayFor(_ => item.Price)</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        <a class="btn btn-outline-dark"
+           id="continueButton"
+           href="@Url.RouteUrl(Constants.Routes.Exterior)"
+           data-href-partial="@Url.RouteUrl(Constants.Routes.ExteriorPartial)">
+            @LocalizationManager.Localize("AccessoriesView_ContinueToExterior_Button")
+        </a>
+    </div>
+}
+
+@if (renderScripts)
+{
+    <script id="@Constants.PartialView.ScriptContentId" type="text/javascript">
+        $(document).ready(function () {
+            let accessories = @Html.Raw(Json.Encode(Model.Accessories));
+            let selectedEngineSetting = @Html.Raw(Json.Encode(Model.SelectedEngineSetting));
+            let selectedPaint = @Html.Raw(Json.Encode(Model.SelectedPaint));
+            let selectedRims = @Html.Raw(Json.Encode(Model.SelectedRims));
+            let viewModel = new ConfigurationViewModel({ accessories: accessories, selectedEngineSetting: selectedEngineSetting, selectedPaint: selectedPaint, selectedRims: selectedRims });
+
+            let partialContentNode = document.getElementById('partialContent');
+            ko.cleanNode(partialContentNode);
+            ko.applyBindings({ configViewModel: viewModel }, partialContentNode);
+
+            $('#continueButton').click(function (event) {
+                event.preventDefault();
+                let visibleTargetUrl = $(this).attr('href');
+                let targetUrl = $(this).data('href-partial');
+
+                console.log('loading partial ' + targetUrl);
+                $.get(targetUrl, function (data) {
+                    replaceConfigurationContent(data, visibleTargetUrl, $('#@Constants.PartialView.ScriptContentId'));
+                });
+            });
+
+            $(window).on('beforeunload', function () {
+                let antiForgeryToken = getAntiForgeryToken($(document));
+                let selectedAccessories = viewModel.selectedAccessoryIds;
+                saveViewModel('/Accessories/SetSelectedAccessories', selectedAccessories.length > 0 ? ko.toJSON(selectedAccessories) : null, antiForgeryToken)
+                    .fail((error) => {
+                        console.log('failed to set selected accessories: ' + error.responseText + ' (' + error.statusText + ')');
+                        // TODO randomly triggered, maybe because of antiForgeryValidation
+                        alert('something went wrong. see console for details');
+                    });
+            });
+        });
+    </script>
+}

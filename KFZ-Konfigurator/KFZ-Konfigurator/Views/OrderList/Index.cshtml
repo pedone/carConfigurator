@@ -58,10 +58,9 @@
     <script type="text/javascript" src="@Url.Content("/Scripts/app/OrderListViewModel.js")"></script>
     <script type="text/javascript" src="@Url.Content("/Scripts/app/Helper.js")"></script>
     <script type="text/javascript">
-        let orders = @Html.Raw(Json.Encode(Model.Orders));
-        let viewModel = new OrderListViewModel(orders, @Model.PageCount);
-
         $(document).ready(function () {
+            let orders = @Html.Raw(Json.Encode(Model.Orders));
+            let viewModel = new OrderListViewModel(orders, @Model.PageCount);
             ko.applyBindings(viewModel);
         });
     </script>

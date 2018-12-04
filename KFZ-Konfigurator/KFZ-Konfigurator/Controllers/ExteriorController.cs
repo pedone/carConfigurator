@@ -1,4 +1,5 @@
-﻿using KFZ_Konfigurator.Models;
+﻿using KFZ_Konfigurator.Helper;
+using KFZ_Konfigurator.Models;
 using KFZ_Konfigurator.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,35 @@ namespace KFZ_Konfigurator.Controllers
                 return RedirectToRoute(Constants.Routes.ModelOverview);
             }
 
+            return View(Constants.Views.ConfigurationIndex, new ConfigurationPageViewModel
+            {
+                PartialViewName = Constants.Views.ExteriorPartialIndex,
+                PartialViewModel = BuildViewModel()
+            });
+        }
+
+        [HttpGet]
+        [Route("configuration/models/model-{id}/exterior/partial", Name = Constants.Routes.ExteriorPartial)]
+        public JsonResult IndexPartial(int id)
+        {
+            //TODO
+            //if (!SessionData.ActiveConfiguration.IsValid(id, out string error))
+            //{
+            //    Log.Error(error);
+            //    return RedirectToRoute(Constants.Routes.ModelOverview);
+            //}
+
+            var viewModel = BuildViewModel();
+            var view = ViewHelper.BuildPartialViewAndScriptJson(ControllerContext, Constants.Views.ExteriorPartialIndex, viewModel);
+            return Json(new
+            {
+                ViewContent = view.ViewContent,
+                ScriptContent = view.ScriptContent
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        private ExteriorPageViewModel BuildViewModel()
+        {
             using (var context = new CarConfiguratorEntityContext())
             {
                 // paint
@@ -57,14 +87,14 @@ namespace KFZ_Konfigurator.Controllers
                 // paint categories
                 var paintCategories = context.Categories.OfType<PaintCategory>().Select(cur => cur.Name).ToList();
 
-                return View(new ExteriorPageViewModel
+                return new ExteriorPageViewModel
                 {
                     Paints = paints,
                     Rims = rims,
                     SelectedAccessories = selectedAccessories,
                     SelectedEngineSetting = selectedEngineSetting,
                     PaintCategories = paintCategories
-                });
+                };
             }
         }
 
