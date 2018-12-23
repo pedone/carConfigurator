@@ -334,6 +334,7 @@
     <Content Include="Scripts\app\Helper.js" />
     <Content Include="Scripts\app\KoExtenders.js" />
     <Content Include="Scripts\app\animals.js" />
+    <Content Include="Scripts\app\main2.js" />
     <Content Include="Scripts\app\main.js" />
     <Content Include="Scripts\app\ModelSelectionViewModel.js" />
     <Content Include="Scripts\app\OrderListViewModel.js" />

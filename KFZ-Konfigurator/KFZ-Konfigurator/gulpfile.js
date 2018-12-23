@@ -86,7 +86,7 @@ function bundleMinJS() {
 }
 
 function browserifyTest(done) {
-    browserify(scriptAppPath + '/main.js', { debug: false, standalone: 'main' })
+    browserify([scriptAppPath + '/main.js', scriptAppPath + '/main2.js'], { debug: false, standalone: 'main' })
         .transform('babelify', { presets: ["@babel/preset-env"] })
         .bundle()
         .pipe(fs.createWriteStream(scriptAppPath + '/bundle.js'));
