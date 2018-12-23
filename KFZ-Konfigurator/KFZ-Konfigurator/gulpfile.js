@@ -1,4 +1,4 @@
-﻿/// <binding BeforeBuild='compileJS, compileCSS' />
+﻿/// <binding />
 'use strict';
 
 const { src, dest, series } = require('gulp'),
@@ -6,9 +6,12 @@ const { src, dest, series } = require('gulp'),
     concat = require('gulp-concat'),
     cssmin = require('gulp-cssmin'),
     uglify = require('gulp-uglify'),
+    uglifyEs = require('gulp-uglify-es').default,
     babel = require('gulp-babel'),
     less = require('gulp-less'),
     rename = require('gulp-rename'),
+    browserify = require('browserify'),
+    fs = require('fs'),
     through2 = require('through2');
 
 const contentPath = './Content';
@@ -73,18 +76,29 @@ function cleanJS(done) {
 
 function bundleMinJS() {
     return src(paths.babel.src)
-        .pipe(babel({ presets: ['@babel/env'] }))
+        //.pipe(babel({ presets: ['@babel/env'] }))
         .pipe(logFileName('bundleMinJS'))
         .pipe(concat(paths.babel.dest))
         .pipe(dest('.'))
-        .pipe(uglify())
+        .pipe(uglifyEs())
         .pipe(rename({ extname: paths.babel.minExtension }))
         .pipe(dest('.'));
 }
 
+function browserifyTest(done) {
+    browserify(scriptAppPath + '/main.js', { debug: false, standalone: 'main' })
+        .transform('babelify', { presets: ["@babel/preset-env"] })
+        .bundle()
+        .pipe(fs.createWriteStream(scriptAppPath + '/bundle.js'));
+    done();
+    //.pipe(buffer())
+    //.pipe(dest('bundle.js'));
+}
+
+exports.browserifyTest = browserifyTest;
+
 exports.cleanCSS = cleanCSS;
 exports.compileCSS = series(cleanCSS, compileLess, compileCSS);
-
 exports.compileLess = compileLess;
 exports.cleanJS = cleanJS;
 exports.compileJS = series(cleanJS, bundleMinJS);

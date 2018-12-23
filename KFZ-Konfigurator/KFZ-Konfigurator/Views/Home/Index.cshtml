@@ -5,3 +5,34 @@
         <p><a href="@Url.RouteUrl(Constants.Routes.ModelOverview)" class="btn btn-primary btn-lg">@LocalizationManager.Localize("HomeView_StartConfiguration_Button")</a>
     </div>
 </div>
+
+@section scripts {
+    @*<script type="text/javascript" src="/Scripts/out/bundle.js"></script>*@
+    @*@Scripts.Render("~/bundles/bundle")*@
+    <script type="module">
+        import { test2 } from '/Scripts/app/main.js';
+        test2();
+    </script>
+
+    @*<script type="module" src="/Scripts/app/animals.js"></script>*@
+    <script type="module">
+                        //System.import('../../Scripts/out/bundle.js').then(function (m) {
+                        //System.import('../../Scripts/app/main.js').then(function (m) {
+                        //    console.log(m);
+                        //    test2();
+                        //});
+                        //import { dog, cat } from '/Scripts/app/animals.js';
+                        //import test from '/Scripts/out/bundle.js';
+                        //dog.talk();
+    </script>
+    @*<script type="module">
+            (async () => {
+                const moduleSpecifier = './Scripts/app/animals.js';
+                const { cat, dog } = await import(moduleSpecifier);
+
+                dog.talk();
+                cat.talk();
+                console.log('dynamic loading');
+            })();
+        </script>*@
+}
